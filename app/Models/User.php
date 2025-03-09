@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Model
+class User extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
-    protected $table = 'user';
+    protected $table = 'users';
 
     protected $fillable = [
         'nip', 'role_id', 'name', 'email', 'password', 'phone_number',
