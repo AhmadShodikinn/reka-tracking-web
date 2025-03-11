@@ -1,16 +1,18 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DriverController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
 
-Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/user', [AuthController::class, 'user']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', [App\Http\Controllers\Api\AuthController::class, 'user']);
-    Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
 });
+
+Route::get('/travel-document/{id}', [DriverController::class, 'showDataTravelDocument'])->middleware('auth:sanctum');
+Route::post('/send-location', [DriverController::class, 'sendLocation'])->middleware('auth:sanctum');
