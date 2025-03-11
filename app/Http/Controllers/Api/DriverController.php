@@ -21,14 +21,12 @@ class DriverController extends Controller
     public function showDataTravelDocument($id) {
         $suratJalan = TravelDocument::where('id', $id)->with(['items'])->first();
 
-        // Jika tidak ditemukan, kembalikan respons error
         if (!$suratJalan) {
             return response()->json([
                 'message' => 'Surat jalan tidak ditemukan.',
             ], 404);
         }
 
-        // Jika ditemukan, kembalikan data surat jalan
         return response()->json([
             'data' => $suratJalan,
         ]);
@@ -43,11 +41,32 @@ class DriverController extends Controller
             'driver_id' => 'required',
         ]);
 
-        $track = Track::create([
-            'driver_id' => $request->driver_id,
-            'time_stamp' => now(),
-            'status' => 'active',
-        ]);
+        $track = Track::where('driver_id', $request->driver_id)->whereHas('trackingSystems', function ($query) use ($request) {
+            $query->where('travel_document_id', $request->travel_document_id);
+        })->latest()->first();
+
+        if (!$track) {
+            $track = Track::create([
+                'driver_id' => $request->driver_id,
+                'time_stamp' => now(),
+                'status' => 'active',
+            ]);
+
+            $trackingSystem = TrackingSystem::create([
+                'track_id' => $track->id,
+                'travel_document_id' => $request->travel_document_id,
+                'time_stamp' => now(),
+                'status' => 'on the way',
+            ]);
+        } else {
+            $trackingSystem = TrackingSystem::firstOrCreate([
+                'track_id' => $track->id,
+                'travel_document_id' => $request->travel_document_id,
+            ], [
+                'time_stamp' => now(),
+                'status' => 'on the way',
+            ]);
+        }
 
         $location = Location::create([
             'track_id' => $track->id,
@@ -56,18 +75,65 @@ class DriverController extends Controller
             'time_stamp' => now(),
         ]);
 
-        $trackingSystem = TrackingSystem::create([
-            'track_id' => $track->id,
-            'travel_document_id' => $request->travel_document_id,
-            'time_stamp' => now(),
-            'status' => 'active',
-        ]);
-
         // Kembalikan respons sukses
         return response()->json([
             'message' => 'Lokasi berhasil dikirim kepada sistem!.',
             'tracking_system' => $trackingSystem,
             'location' => $location,
         ], 201);
+    }
+
+    //update status send SJN
+    public function updateStatusSendSJN(Request $request) {
+        $request->validate([
+            'id' => 'required|exists:travel_document,id',
+            'status' => 'required|in:active',
+        ]);
+
+        $trackingSystem = TrackingSystem::where('travel_document_id', $request->id)->latest()->first();
+
+        if (!$trackingSystem) {
+            return response()->json([
+                'message' => 'Tracking system tidak ditemukan.',
+            ], 404);
+        }
+
+        if ($request->status === 'active') {
+            if ($trackingSystem->status === 'non-active') {
+                $trackingSystem->update([
+                    'status' => 'active',
+                ]);
+    
+                return response()->json([
+                    'message' => 'Status tracking system berhasil diubah menjadi active.',
+                    'tracking_system' => $trackingSystem,
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Status tracking system sudah dalam kondisi active.',
+                ], 400);
+            }
+        }
+
+        if ($request->status === 'non-active') {
+            if ($trackingSystem->status === 'active') {
+                $trackingSystem->update([
+                    'status' => 'non-active',
+                ]);
+    
+                return response()->json([
+                    'message' => 'Status tracking system berhasil diubah menjadi non-active.',
+                    'tracking_system' => $trackingSystem,
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Status tracking system sudah dalam kondisi non-active.',
+                ], 400);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Status tidak valid.',
+        ], 400);
     }
 }

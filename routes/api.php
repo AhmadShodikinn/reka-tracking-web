@@ -16,3 +16,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/travel-document/{id}', [DriverController::class, 'showDataTravelDocument'])->middleware('auth:sanctum');
 Route::post('/send-location', [DriverController::class, 'sendLocation'])->middleware('auth:sanctum');
+Route::post('/update-status', [DriverController::class, 'updateStatusSendSJN'])->middleware('auth:sanctum');
