@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('track', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('driver_id')->constrained('user'); // Foreign key ke user (driver)
+            $table->foreignId('driver_id')->constrained('users'); // Foreign key ke user (driver)
             $table->timestamp('time_stamp');
             $table->enum('status', ['active', 'non-active']);
             $table->timestamps();

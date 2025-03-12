@@ -83,22 +83,37 @@ class AuthController extends Controller
         }
     
         // Cek apakah token sudah kadaluarsa (jika kamu menyimpan expires_at)
-        if (Carbon::now()->gt($token->expires_at)) {
-            return response()->json(['message' => 'Token has expired'], 401);
+        if (Carbon::now()->gt($token->expires_at)) {   
+            $token->delete(); 
+            $newToken = $token->tokenable->createToken('token')->plainTextToken;
+        } else {
+            return response()->json([
+                'status' => 'token masih belum kadaluwarsa',
+            ]);
         }
-    
-        // Membuat token baru
-        $newToken = $token->tokenable->createToken('token')->plainTextToken;
-    
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'access_token' => $newToken,
-                'token_type' => 'Bearer',
-                'expires_at' => Carbon::now()->addMinutes(60), // set waktu kedaluwarsa token baru
-            ]
-        ]);
+
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'access_token' => $newToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::now()->addMinutes(60), // set waktu kedaluwarsa token baru
+        ]
+    ]);
     }
+
+    //experimental
+    // public function refreshToken(Request $request) {
+    //     $user = $request->user();
+    //     $user->tokens->delete();
+    //     $token = $user->createToken('token')->plainTextToken;
+    
+    //     return response()->json([
+    //         'message' => 'Token Refreshed!',
+    //         'access_token' => $token,
+    //         'token_type' => 'Bearer',
+    //     ]);
+    // }
     
 
     public function logout() {
