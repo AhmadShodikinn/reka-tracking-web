@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -24,7 +26,21 @@ class AuthController extends Controller
             $token->delete();
         });
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $expiresAt = Carbon::now()->addSeconds(59);
+        // $expiresAt = Carbon::now()->addMinutes(10);
+
+        $token = $user->createToken('token')->plainTextToken;
+
+        $latestToken = $user->tokens()->latest()->first();  // Ambil token terakhir yang dibuat
+
+        // Update waktu kedaluwarsa pada token
+        $latestToken->update([
+            'expires_at' => $expiresAt
+        ]);
+
+        // $token->tokens->last()->update([
+        //     'expires_at' => $expiration,
+        // ]);
 
         $user->load('role.division');
 
@@ -32,6 +48,7 @@ class AuthController extends Controller
             'message' => 'Login Success!',
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'expires_at' => $expiresAt,
             'data' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -46,6 +63,43 @@ class AuthController extends Controller
             ],
         ]);
     }
+
+    public function refreshToken(Request $request) {
+        $token = $request->header('Authorization');
+    
+        if (empty($token)) {
+            return response()->json(['message' => 'Token is invalid'], 422);
+        }
+    
+        // Memecah Bearer token
+        $token = explode('Bearer ', $token);
+        if (empty($token[1]) || empty($token = PersonalAccessToken::findToken($token[1]))) {
+            return response()->json(['message' => 'Token is invalid'], 422);
+        }
+    
+        // Memeriksa apakah token terkait dengan model User
+        if (!$token->tokenable instanceof User) {
+            return response()->json(['message' => 'Token is invalid'], 422);
+        }
+    
+        // Cek apakah token sudah kadaluarsa (jika kamu menyimpan expires_at)
+        if (Carbon::now()->gt($token->expires_at)) {
+            return response()->json(['message' => 'Token has expired'], 401);
+        }
+    
+        // Membuat token baru
+        $newToken = $token->tokenable->createToken('token')->plainTextToken;
+    
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'access_token' => $newToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::now()->addMinutes(60), // set waktu kedaluwarsa token baru
+            ]
+        ]);
+    }
+    
 
     public function logout() {
         Auth::user()->tokens()->delete();
