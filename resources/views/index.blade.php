@@ -35,7 +35,7 @@
         class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
       >
         <!-- Small Device Overlay Start -->
-        <include src="./partials/overlay.html" />
+        @include('partials.overlay')
         <!-- Small Device Overlay End -->
 
         <!-- ===== Header Start ===== -->
