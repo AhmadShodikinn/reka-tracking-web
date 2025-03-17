@@ -9,9 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class AuthWebController extends Controller
 {
     public function login(Request $request) {
+        // dd($request->all());
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
