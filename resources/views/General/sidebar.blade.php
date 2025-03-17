@@ -63,8 +63,8 @@
           <!-- Menu Item Dashboard -->
           <li>
             <a
-              href="#"
-              @click.prevent="selected = (selected === 'Dashboard' ? '':'Dashboard')"
+              href="{{ route('dashboard') }}"
+              @click="selected = (selected === 'Dashboard' ? '':'Dashboard')"
               class="menu-item group"
               :class=" (selected === 'Dashboard') ? 'menu-item-active' : 'menu-item-inactive'"
             >
@@ -95,13 +95,13 @@
           <!-- Menu Item User Management -->
           <li>
             <a
-              href="index.html"
-              @click="selected = (selected === 'Calendar' ? '':'Calendar')"
+              href="{{ route('users') }}"
+              @click="selected = (selected === 'Users' ? '':'Users')"
               class="menu-item group"
-              :class=" (selected === 'Calendar') && (page === 'calendar') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class=" (selected === 'Users') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Calendar') && (page === 'calendar') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="(selected === 'users') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"

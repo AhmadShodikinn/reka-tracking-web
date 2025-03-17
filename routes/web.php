@@ -21,3 +21,7 @@ Route::get('/logout', [AuthWebController::class, 'logout'])->name('logout');
 Route::get('/dashboard', function () {
     return view('General.dashboard');
 })->name('dashboard')->middleware('auth');
+
+Route::get('/users', function () {
+    return view('General.users');
+})->name('users')->middleware('auth');
