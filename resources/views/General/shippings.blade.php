@@ -8,7 +8,7 @@
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-      Dashboard | Rekatrack
+      Manajemen Pengiriman | Rekatrack
     </title>
   </head>
     @vite('resources/css/app.css')

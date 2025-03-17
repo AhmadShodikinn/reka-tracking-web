@@ -120,7 +120,7 @@
                 class="menu-item-text"
                 :class="sidebarToggle ? 'lg:hidden' : ''"
               >
-                Management User
+                Manajemen Pengguna
               </span>
             </a>
           </li>
@@ -128,13 +128,13 @@
           <!-- Menu Item Shipping Management -->
           <li>
             <a
-              href="profile.html"
-              @click="selected = (selected === 'Profile' ? '':'Profile')"
+              href="{{ route('shippings') }}"
+              @click="selected = (selected === 'Shippings' ? '':'Shippings')"
               class="menu-item group"
-              :class=" (selected === 'Profile') && (page === 'profile') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class=" (selected === 'Shippings') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Profile') && (page === 'profile') ?  'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="(selected === 'Shippings')  ?  'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -192,13 +192,13 @@
           <!-- Menu Item Tracker -->
           <li>
             <a
-              href="#"
-              @click.prevent="selected = (selected === 'Charts' ? '':'Charts')"
+              href="{{ route('tracking') }}"
+              @click="selected = (selected === 'Tracker' ? '':'Tracker')"
               class="menu-item group"
-              :class="(selected === 'Charts') ? 'menu-item-active' : 'menu-item-inactive'"
+              :class="(selected === 'Tracker') ? 'menu-item-active' : 'menu-item-inactive'"
             >
               <svg
-                :class="(selected === 'Charts') || ( page === 'barChart' || page === 'pieChart') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                :class="(selected === 'Tracker') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"

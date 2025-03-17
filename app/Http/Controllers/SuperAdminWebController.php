@@ -12,8 +12,10 @@ class SuperAdminWebController extends Controller
     //super admin handling management user
     public function index() {
         $users = User::all();
+        // $isSuperAdmin = $users->role->name == 'Super Admin';
 
-        return view('dashboard', compact('users')); //set view
+
+        return view('General.users', compact('users', 'isSuperAdmin')); //set view
     }
 
     public function register(Request $request) {
