@@ -95,7 +95,7 @@
           <!-- Menu Item User Management -->
           <li>
             <a
-              href="{{ route('users') }}"
+              href="{{ route('users.index') }}"
               @click="selected = (selected === 'Users' ? '':'Users')"
               class="menu-item group"
               :class=" (selected === 'Users') ? 'menu-item-active' : 'menu-item-inactive'"

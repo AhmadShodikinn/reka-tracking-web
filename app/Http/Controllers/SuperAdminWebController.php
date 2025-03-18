@@ -12,10 +12,11 @@ class SuperAdminWebController extends Controller
     //super admin handling management user
     public function index() {
         $users = User::all();
+        // dd($users);
         // $isSuperAdmin = $users->role->name == 'Super Admin';
 
 
-        return view('General.users', compact('users', 'isSuperAdmin')); //set view
+        return view('General.users', compact('users')); //set view
     }
 
     public function register(Request $request) {
@@ -43,6 +44,14 @@ class SuperAdminWebController extends Controller
 
         return redirect()->route('dashboard'); //set view
     }
+
+    public function detail($id)
+    {
+        $user = User::findOrFail($id);
+        // dd($user);
+        return view('users.edit', compact('user'));
+    }
+
 
     public function update(Request $request, $id) {
         $validator = Validator::make($request->all(), [

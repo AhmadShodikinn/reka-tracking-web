@@ -137,15 +137,18 @@
                           <td class="px-5 py-4 sm:px-6">
                               <div class="flex space-x-2">
                                   <!-- Tombol Aksi -->
-                                  @if(!$isSuperAdmin)
-                                      <!-- Jika bukan Super Admin, tampilkan tombol Edit dan Hapus -->
-                                      <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a>
-                                      <form action="#" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
-                                          @csrf
-                                          @method('DELETE')
-                                          <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                                      </form>
-                                  @endif
+                                  <!-- <a href="{{ route('users.update', ['id' => $user->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a> -->
+                                  <form action="{{ route('users.detail', ['id' => $user['id']]) }}" method="GET">
+                                      <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                          Edit
+                                      </button>
+                                  </form>
+                                  <form action="{{ route('users.destroy', ['id' => $user['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
+                                      @csrf
+                                      @method('DELETE')
+                                      <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
+                                  </form>
+
                               </div>
                           </td>
                       </tr>
