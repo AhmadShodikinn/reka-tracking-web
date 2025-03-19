@@ -49,7 +49,7 @@ class SuperAdminWebController extends Controller
     {
         $user = User::findOrFail($id);
         // dd($user);
-        return view('users.edit', compact('user'));
+        return view('General.users_detail', compact('user'));
     }
 
 
