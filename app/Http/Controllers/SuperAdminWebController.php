@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -10,23 +11,32 @@ use Illuminate\Support\Facades\Validator;
 class SuperAdminWebController extends Controller
 {
     //super admin handling management user
+    //showing page
     public function index() {
         $users = User::all();
-        // dd($users);
-        // $isSuperAdmin = $users->role->name == 'Super Admin';
-
-
-        return view('General.users', compact('users')); //set view
+        return view('General.users', compact('users')); 
     }
 
+    public function add() {
+        $roles = Role::where('name', '!=', 'Super Admin')->get();
+        return view('General.users-add', compact('roles')); 
+    }
+
+    public function edit($id) {
+        $user = User::findOrFail($id);
+        $roles = Role::where('name', '!=', 'Super Admin')->get();
+        // dd($user);
+        return view('General.users-edit', compact('user', 'roles'));
+    }
+
+    //function
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string',
+            'fullname' => 'required|string',
             'nip' => 'required|string|unique:users,nip',
-            'phone_number' => 'required|string',
-            'role_id' => 'required|integer',
+            'email' => 'required|email|unique:users,email',
+            'telephone' => 'required|string',
+            'role' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -34,44 +44,36 @@ class SuperAdminWebController extends Controller
         }
 
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->fullname,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make("password"),
             'nip' => $request->nip,
-            'phone_number' => $request->phone_number,
-            'role_id' => $request->role_id,
+            'phone_number' => $request->telephone,
+            'role_id' => $request->role,
         ]);
-
         return redirect()->route('dashboard'); //set view
     }
 
-    public function detail($id)
-    {
-        $user = User::findOrFail($id);
-        // dd($user);
-        return view('General.users_detail', compact('user'));
-    }
-
-
     public function update(Request $request, $id) {
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'nip' => 'required|string',
-            'phone_number' => 'required|string',
-            'role_id' => 'required|integer',
+            'fullname' => 'required|string',
+            'nip' => 'required|string|unique:users,nip,' . $id, 
+            'email' => 'required|email|unique:users,email,' . $id, 
+            'telephone' => 'required|string',
+            'role' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+        
         $user = User::findOrFail($id);
-        $user->name = $request->name;
+        $user->name = $request->fullname;
         $user->email = $request->email;
         $user->nip = $request->nip;
-        $user->phone_number = $request->phone_number;
-        $user->role_id = $request->role_id;
+        $user->phone_number = $request->telephone;
+        $user->role_id = $request->role;
         $user->save();
 
         return redirect()->route('dashboard'); //set view
@@ -83,9 +85,6 @@ class SuperAdminWebController extends Controller
 
         return redirect()->route('dashboard'); //set view
     }
-
-    // Admin 
-    
 
 
 }

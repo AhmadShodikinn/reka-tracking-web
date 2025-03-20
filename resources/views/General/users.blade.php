@@ -51,7 +51,8 @@
 
             <!-- Start Tables -->
             <!-- Search Form -->
-            <div class="mb-6 flex flex-wrap items-center justify-end gap-3">
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <a href="{{ route('users.add')}}" class="rounded-md bg-blue-500 text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Tambah Pengguna</a>
               <div class="relative">
                 <input
                   type="text"
@@ -91,6 +92,11 @@
                       </th>
                       <th class="px-5 py-3 sm:px-6">
                         <div class="flex items-center">
+                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">NIP</p>
+                        </div>
+                      </th>
+                      <th class="px-5 py-3 sm:px-6">
+                        <div class="flex items-center">
                           <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nama Pengguna</p>
                         </div>
                       </th>
@@ -123,6 +129,9 @@
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> <!-- Nomor urut -->
                           </td>
                           <td class="px-5 py-4 sm:px-6">
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->nip }}</p> <!-- Nomor urut -->
+                          </td>
+                          <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->name }}</p> <!-- Nama Pengguna -->
                           </td>
                           <td class="px-5 py-4 sm:px-6">
@@ -138,7 +147,7 @@
                               <div class="flex space-x-2">
                                   <!-- Tombol Aksi -->
                                   <!-- <a href="{{ route('users.update', ['id' => $user->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a> -->
-                                  <form action="{{ route('users.detail', ['id' => $user['id']]) }}" method="GET">
+                                  <form action="{{ route('users.edit', ['id' => $user['id']]) }}" method="GET">
                                       <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">
                                           Edit
                                       </button>
