@@ -128,7 +128,7 @@
           <!-- Menu Item Shipping Management -->
           <li>
             <a
-              href="{{ route('shippings') }}"
+              href="{{ route('shippings.index') }}"
               @click="selected = (selected === 'Shippings' ? '':'Shippings')"
               class="menu-item group"
               :class=" (selected === 'Shippings') ? 'menu-item-active' : 'menu-item-inactive'"

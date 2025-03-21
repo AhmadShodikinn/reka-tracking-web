@@ -33,9 +33,11 @@ Route::post('/users', [SuperAdminWebController::class, 'register'])->name('users
 Route::put('/users/{id}', [SuperAdminWebController::class, 'update'])->name('users.update')->middleware('auth');
 Route::delete('/users/{id}', [SuperAdminWebController::class, 'delete'])->name('users.destroy')->middleware('auth');
 
-Route::get('/shippings', function () {
-    return view('General.shippings');
-})->name('shippings')->middleware('auth');
+Route::get('/shippings', [AdminWebController::class, 'shippingsIndex'])->name('shippings.index')->middleware('auth');
+
+// Route::get('/shippings', function () {
+//     return view('General.shippings');
+// })->name('shippings')->middleware('auth');
 
 Route::get('/tracking', function () {
     return view('General.tracker');

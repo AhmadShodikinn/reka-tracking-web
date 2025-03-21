@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 class AdminWebController extends Controller
 {
     // Admin handling management SJN
-    public function index() {
+    public function shippingsIndex() {
         $listTravelDocument = TravelDocument::all();
 
-        return view('dashboard', compact('listTravelDocument')); //set view
+        return view('General.shippings', compact('listTravelDocument')); //set view
     }
 
     // Detail SJN and list item by SJN ID
