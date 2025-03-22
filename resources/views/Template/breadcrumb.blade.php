@@ -33,9 +33,9 @@
       <li class="text-sm text-gray-800 dark:text-white/90" x-text="pageName"></li>
 
       <!-- Tampilkan subPageName jika ada -->
-      <template x-if="!subPageName">
+      <!-- <template x-if="!subPageName">
         <li class="text-sm text-gray-800 dark:text-white/90 flex items-center">
-          <!-- SVG untuk pageName -->
+          SVG untuk pageName
           <svg
             class="stroke-current w-3 h-3 mr-1"
             xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@
           </svg>
           <span x-text="pageName"></span>
         </li>
-      </template>
+      </template> -->
       
       <!-- Tampilkan subPageName jika ada -->
       <template x-if="subPageName">

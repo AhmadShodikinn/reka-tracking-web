@@ -19,7 +19,8 @@ return new class extends Migration
             $table->integer('qty_send');
             $table->integer('total_send');
             $table->integer('qty_po');
-            $table->text('description')->nullable();
+            $table->text('description');
+            $table->text('information')->nullable();
             $table->timestamps();
         });
     }

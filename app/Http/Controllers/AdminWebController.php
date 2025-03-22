@@ -14,6 +14,23 @@ class AdminWebController extends Controller
         return view('General.shippings', compact('listTravelDocument')); //set view
     }
 
+    public function shippingsDetail($id) {
+        $travelDocument = TravelDocument::with('items')->findOrFail($id);
+
+        return view('General.shippings-detail', compact('travelDocument')); //set view
+    }
+
+    public function shippingsAdd() {
+        return view('General.shippings-add'); //set view
+    }
+
+    public function shippingsEdit($id) {
+        $travelDocument = TravelDocument::with('items')->findOrFail($id);
+
+        return view('General.shippings.edit', compact('travelDocument')); //set view
+    }
+
+
     // Detail SJN and list item by SJN ID
     public function showDetail($id) {
         $travelDocument = TravelDocument::with('items')->findOrFail($id);

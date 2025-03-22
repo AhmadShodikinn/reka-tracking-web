@@ -45,14 +45,14 @@
         <!-- ===== Main Content Start ===== -->
         <main>
         <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-              <div x-data="{ pageName: `Manajemen Pengiriman`}">
+            <div x-data="{ pageName: `Manajemen Pengiriman`, subPageName: ''}">
                 @include('Template.breadcrumb')
             </div>
 
             <!-- Start Tables -->
             <!-- Search Form -->
             <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <a href="{{ route('users.add')}}" class="rounded-md bg-blue-500 text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Tambah Pengguna</a>
+            <a href="{{ route('shippings.add')}}" class="rounded-md bg-blue-500 text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Tambah Pengiriman</a>
               <div class="relative">
                 <input
                   type="text"
@@ -97,6 +97,11 @@
                       </th>
                       <th class="px-5 py-3 sm:px-6">
                         <div class="flex items-center">
+                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nomor Refensi</p>
+                        </div>
+                      </th>
+                      <th class="px-5 py-3 sm:px-6">
+                        <div class="flex items-center">
                           <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Tanggal SJN</p>
                         </div>
                       </th>
@@ -123,41 +128,41 @@
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                  @foreach($users as $index => $user)
+                  @foreach($listTravelDocument as $index => $data)
                       <tr>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> <!-- Nomor urut -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->nip }}</p> <!-- Nomor urut -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->no_travel_document }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->name }}</p> <!-- Nama Pengguna -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->date_no_travel_document }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->email }}</p> <!-- Alamat E-mail -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->reference_number }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->phone_number }}</p> <!-- Nomor Telepon -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->send_to }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->role->name }}</p> <!-- Role -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->project }}</p>
+                          </td>
+                          <td class="px-5 py-4 sm:px-6">
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->status }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <div class="flex space-x-2">
-                                  <!-- Tombol Aksi -->
-                                  <!-- <a href="{{ route('users.update', ['id' => $user->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a> -->
-                                  <form action="{{ route('users.edit', ['id' => $user['id']]) }}" method="GET">
-                                      <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">
-                                          Edit
-                                      </button>
-                                  </form>
-                                  <form action="{{ route('users.destroy', ['id' => $user['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
-                                      @csrf
-                                      @method('DELETE')
-                                      <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                                  </form>
-
+                                <form action="{{ route('shippings.detail', ['id' => $data['id']]) }}" method="GET">
+                                    <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                        detail
+                                    </button>
+                                </form>
+                                <form action="#" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
+                                </form>
                               </div>
                           </td>
                       </tr>
