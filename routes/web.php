@@ -33,11 +33,12 @@ Route::post('/users', [SuperAdminWebController::class, 'register'])->name('users
 Route::put('/users/{id}', [SuperAdminWebController::class, 'update'])->name('users.update')->middleware('auth');
 Route::delete('/users/{id}', [SuperAdminWebController::class, 'delete'])->name('users.destroy')->middleware('auth');
 
+//Admin Route
 Route::get('/shippings', [AdminWebController::class, 'shippingsIndex'])->name('shippings.index')->middleware('auth');
 Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsDetail'])->name('shippings.detail')->middleware('auth');
-// Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit')->middleware('auth');
 Route::get('/add-shippings', [AdminWebController::class, 'shippingsAdd'])->name('shippings.add')->middleware('auth');
-Route::get('/store-shippings', [AdminWebController::class, 'shippingsAddTravelDocument'])->name('shippings.store')->middleware('auth');
+Route::post('/shippings', [AdminWebController::class, 'shippingsAddTravelDocument'])->name('shippings.store')->middleware('auth');
+// Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit')->middleware('auth');
 // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsUpdate'])->name('shippings.update')->middleware('auth');
 // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsDelete'])->name('shippings.destroy')->middleware('auth');
 
