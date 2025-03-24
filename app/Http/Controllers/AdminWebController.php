@@ -39,7 +39,7 @@ class AdminWebController extends Controller
     }
 
     // Create SJN
-    public function store(Request $request) {
+    public function shippingsAddTravelDocument(Request $request) {
         $validatedData = $request->validate([
             'no_travel_document' => 'required|string|unique:travel_document',
             'date_no_travel_document' => 'required|date',

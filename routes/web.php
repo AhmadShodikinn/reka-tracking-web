@@ -37,8 +37,7 @@ Route::get('/shippings', [AdminWebController::class, 'shippingsIndex'])->name('s
 Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsDetail'])->name('shippings.detail')->middleware('auth');
 // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit')->middleware('auth');
 Route::get('/add-shippings', [AdminWebController::class, 'shippingsAdd'])->name('shippings.add')->middleware('auth');
-
-// Route::get('/shippings', [AdminWebController::class, 'shippingsRegister'])->name('shippings.store')->middleware('auth');
+Route::get('/store-shippings', [AdminWebController::class, 'shippingsAddTravelDocument'])->name('shippings.store')->middleware('auth');
 // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsUpdate'])->name('shippings.update')->middleware('auth');
 // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsDelete'])->name('shippings.destroy')->middleware('auth');
 
