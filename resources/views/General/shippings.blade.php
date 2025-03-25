@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -7,183 +7,42 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>
-      Manajemen Pengiriman | Rekatrack
-    </title>
-  </head>
+    <title>Surat Jalan</title>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
-  <body
-    x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
-    x-init="
-         darkMode = JSON.parse(localStorage.getItem('darkMode'));
-         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
-    :class="{'dark bg-gray-900': darkMode === true}"
-  >
-    <!-- ===== Preloader Start ===== -->
-    @include('partials.preloader')
-    <!-- ===== Preloader End ===== -->
-
-    <!-- ===== Page Wrapper Start ===== -->
-    <div class="flex h-screen overflow-hidden">
-      <!-- ===== Sidebar Start ===== -->
-      @include('Template.sidebar')
-      <!-- ===== Sidebar End ===== -->
-
-      <!-- ===== Content Area Start ===== -->
-      <div
-        class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
-      >
-        <!-- Small Device Overlay Start -->
-        @include('partials.overlay')
-        <!-- Small Device Overlay End -->
-
-        <!-- ===== Header Start ===== -->
-        @include('Template.header')
-        <!-- ===== Header End ===== -->
-
-        <!-- ===== Main Content Start ===== -->
-        <main>
-        <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-            <div x-data="{ pageName: `Manajemen Pengiriman`, subPageName: ''}">
-                @include('Template.breadcrumb')
-            </div>
-
-            <!-- Start Tables -->
-            <!-- Search Form -->
-            <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <a href="{{ route('shippings.add')}}" class="rounded-md bg-blue-500 text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Tambah Pengiriman</a>
-              <div class="relative">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  id="search"
-                  name="search"
-                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                />
-                <svg
-                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke-width="1.5" 
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round" 
-                    stroke-linejoin="round"  
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <!-- End Search Form -->
- 
-            <!-- Start Table Content -->
-            <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-              <div class="max-w-full overflow-x-auto">
-                <table class="min-w-full">
-                  <thead>
-                    <tr class="border-b border-gray-100 dark:border-gray-800">
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">No</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nomor SJN</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nomor Refensi</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Tanggal SJN</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Kepada</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Proyek</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Status</p>
-                        </div>
-                      </th>
-                      <th class="px-5 py-3 sm:px-6">
-                        <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Aksi</p>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                  @foreach($listTravelDocument as $index => $data)
-                      <tr>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> 
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->no_travel_document }}</p> 
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->date_no_travel_document }}</p> 
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->reference_number }}</p> 
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->send_to }}</p> 
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->project }}</p>
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->status }}</p>
-                          </td>
-                          <td class="px-5 py-4 sm:px-6">
-                              <div class="flex space-x-2">
-                                <form action="{{ route('shippings.detail', ['id' => $data['id']]) }}" method="GET">
-                                    <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">
-                                        detail
-                                    </button>
-                                </form>
-                                <form action="#" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                                </form>
-                              </div>
-                          </td>
-                      </tr>
-                  @endforeach
-
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- End Table Content -->
-
-
-          </div>
-            
-        </main>
-        <!-- ===== Main Content End ===== -->
-      </div>
-      <!-- ===== Content Area End ===== -->
+    <style>
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      body {
+        margin: 20mm;
+      }
+    </style>
+  </head>
+  <body class="font-sans">
+    <!-- ===== Header Start ===== -->
+    <div class="text-center mb-8">
+      <img src="{{ asset('path-to-your-logo.png') }}" alt="Logo" class="mx-auto mb-4" style="max-width: 200px;">
+      <p class="text-lg font-semibold mb-1">PT Rekaindo Global Jasa</p>
+      <p class="mb-1">Alamat: Jl. Contoh Alamat No. 123, Jakarta</p>
+      <p class="mb-1">Telp: (021) 123-4567</p>
+      <p class="mb-4">Email: info@rekaglobal.co.id</p>
     </div>
-    <!-- ===== Page Wrapper End ===== -->
-  </body>
+    <!-- ===== Header End ===== -->
 
+    <!-- ===== Horizontal Line Start ===== -->
+    <hr class="border-t-2 border-gray-400 mb-6">
+    <!-- ===== Horizontal Line End ===== -->
+
+    <!-- ===== Surat Jalan Start ===== -->
+    <div class="text-center mb-4">
+      <h2 class="text-2xl font-bold mb-4">SURAT JALAN</h2>
+      <p class="text-lg">No: <strong>{{ $suratJalanNo }}</strong></p>
+    </div>
+    <!-- ===== Surat Jalan End ===== -->
+
+    <!-- Optionally: Add more content if necessary -->
+    <!-- For example: table or list items -->
+  </body>
 </html>

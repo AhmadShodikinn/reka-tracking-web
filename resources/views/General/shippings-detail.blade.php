@@ -50,17 +50,37 @@
             </div>
 
             <!-- Information Detail -->
-            <div class="mb-6 px-6 grid grid-cols-12 gap-3">
-                <div class="col-span-8 text-left">
-                    <p class="font-medium">Kepada: {{ $travelDocument->send_to }}</p>
-                    <p class="font-medium">Proyek: {{ $travelDocument->project }}</p>
-                    <p class="font-medium">Tanggal SJN: {{ \Carbon\Carbon::parse($travelDocument->date_no_travel_document)->format('d/m/Y') }}</p>
+            <div class="mb-6 px-4 grid grid-cols-12 gap-3">
+              <div class="col-span-8 text-left">
+                <div class="flex flex-inline mb-3 gap-1">
+                  <p class="font-semibold">Kepada:</p>
+                  <p class="font-normal truncate hover:overflow-visible hover:whitespace-normal hover:text-ellipsis">
+                    {{ $travelDocument->send_to }}
+                  </p>
                 </div>
-                <div class="col-span-4 text-left">
-                    <p class="font-medium">Nomor SJN: {{ $travelDocument->no_travel_document }}</p>
-                    <p class="font-medium">PO: {{ $travelDocument->po_number }}</p>
-                    <p class="font-medium">Ref: {{ $travelDocument->reference_number }}</p>
+                <div class="flex flex-inline mb-3 gap-1">
+                  <p class="font-semibold">Proyek:</p>
+                  <p class="font-normal">{{ $travelDocument->project }}</p>
                 </div>
+                <div class="flex flex-inline mb-3 gap-1">
+                  <p class="font-semibold">Tanggal SJN:</p>
+                  <p class="font-normal">{{ \Carbon\Carbon::parse($travelDocument->date_no_travel_document)->format('d/m/Y') }}</p>
+                </div>
+              </div>
+              <div class="col-span-4 text-left">
+                <div class="flex flex-inline mb-3 gap-1">
+                  <p class="font-semibold">Nomor SJN:</p>
+                  <p class="font-normal">{{ $travelDocument->no_travel_document }}</p>
+                </div>
+                <div class="flex flex-inline mb-3 gap-1">
+                  <p class="font-semibold">PO:</p>
+                  <p class="font-normal">{{ $travelDocument->po_number }}</p>
+                </div>
+                <div class="flex flex-inline mb-3 gap-1">
+                  <p class="font-semibold">Ref:</p>
+                  <p class="font-normal">{{ $travelDocument->reference_number }}</p>
+                </div>
+              </div>
             </div>
 
             <!-- Start Tables -->
@@ -88,6 +108,11 @@
                       <th class="px-5 py-3 sm:px-6">
                         <div class="flex items-center">
                           <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">QTY Kirim</p>
+                        </div>
+                      </th>
+                      <th class="px-5 py-3 sm:px-6">
+                        <div class="flex items-center">
+                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">QTY PO</p>
                         </div>
                       </th>
                       <th class="px-5 py-3 sm:px-6">
@@ -129,6 +154,9 @@
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400"> {{ $item->qty_po }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400"> {{ $item->unit }}</p>
+                          </td>
+                          <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->information }}</p>
                           </td>
                         </tr>
@@ -137,8 +165,22 @@
                 </table>
               </div>
             </div>
-
             <!-- End Table Content -->
+
+            <div class="justify-end flex space-x-4 py-4">
+              <!-- Cetak Surat Jalan Button -->
+              <form action="{{ route('shippings.print', ['id' => $travelDocument->id ]) }}" method="POST">
+                @csrf
+                <!-- Hidden Field to Send travelDocument ID -->
+                <input type="hidden" name="travelDocumentId" value="{{ $travelDocument->id }}">
+                <button 
+                  type="submit" 
+                  class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                  Cetak Surat Jalan
+                </button>
+              </form>
+            </div>
+
 
 
           </div>
