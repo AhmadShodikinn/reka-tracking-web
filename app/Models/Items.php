@@ -12,7 +12,7 @@ class Items extends Model
     protected $table = 'items'; 
 
     protected $fillable = [
-        'travel_document_id', 'item_code', 'item_name', 'qty_send', 'total_send', 'qty_po', 'description', 'information'
+        'travel_document_id', 'item_code', 'item_name', 'qty_send', 'total_send', 'qty_po', 'unit', 'description', 'information'
     ];
 
     public function travelDocument()

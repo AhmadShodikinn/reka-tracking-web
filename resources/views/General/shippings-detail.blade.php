@@ -77,7 +77,7 @@
                       </th>
                       <th class="px-5 py-3 sm:px-6">
                         <div class="flex items-center">
-                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Deskripsi</p>
+                          <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nama Barang</p>
                         </div>
                       </th>
                       <th class="px-5 py-3 sm:px-6">
@@ -114,7 +114,7 @@
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->description }}</p>
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->item_name }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->item_code }}</p> 

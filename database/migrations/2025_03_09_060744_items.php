@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('qty_send');
             $table->integer('total_send');
             $table->integer('qty_po');
+            $table->string('unit');
             $table->text('description');
             $table->text('information')->nullable();
             $table->timestamps();
