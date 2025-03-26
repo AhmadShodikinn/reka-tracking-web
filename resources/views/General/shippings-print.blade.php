@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surat Jalan</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
     <style>
         @page {
             size: A4;
@@ -16,20 +17,29 @@
     </style>
 </head>
 <body class="font-sans">
-    <div class="text-center">
+    <div class="text-left">
         <!-- Header Section -->
-        <img src="{{ asset('path-to-your-logo.png') }}" alt="Logo" class="mx-auto mb-4" style="max-width: 200px;">
-        <p class="text-lg font-semibold mb-1">PT Rekaindo Global Jasa</p>
-        <p class="mb-1">Alamat: Jl. Contoh Alamat No. 123, Jakarta</p>
-        <p class="mb-1">Telp: (021) 123-4567</p>
-        <p class="mb-4">Email: info@rekaglobal.co.id</p>
+        <div class="mb-4">
+            <!-- Logo di kiri -->
+            <img src="{{ asset('images/logo/logo-reka.png') }}" alt="Logo" class="mb-2" style="max-width: 200px;">
+            
+            <!-- Alamat dan informasi lainnya di bawah logo -->
+            <div>
+                <p class="text-3xl font-bold">PT Rekaindo Global Jasa</p>
+                <p class="text-base font-regular">Jl. Candi Sewu No. 30, Madiun 63122 </p>
+                <p class="text-base font-regular">Telp. 0351-4773030</p>
+                <p class="text-base font-regular">Email: sekretariat@ptrekaindo.co.id</p>
+            </div>
+        </div>
         
-        <!-- Horizontal Line -->
         <hr class="border-t-2 border-gray-400 mb-6">
         
-        <!-- Surat Jalan Section -->
-        <h2 class="text-2xl font-bold mb-4">SURAT JALAN</h2>
-        <p class="text-lg">No: <strong>{{ $suratJalanNo }}</strong></p> <!-- Laravel variable for Surat Jalan Number -->
+        <div class="text-center">
+            <h2 class="text-3xl font-bold">SURAT JALAN</h2>
+            <p class="text-lg">No: <strong>{{ $travelDocument->no_travel_document }}</strong></p> <!-- Laravel variable for Surat Jalan Number -->
+        </div>
+
+        
     </div>
 </body>
 </html>

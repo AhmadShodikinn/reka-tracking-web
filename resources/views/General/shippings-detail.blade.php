@@ -169,10 +169,10 @@
 
             <div class="justify-end flex space-x-4 py-4">
               <!-- Cetak Surat Jalan Button -->
-              <form action="{{ route('shippings.print', ['id' => $travelDocument->id ]) }}" method="POST">
+              <form action="{{ route('shippings.print', ['id' => $travelDocument->id ]) }}" method="GET">
                 @csrf
                 <!-- Hidden Field to Send travelDocument ID -->
-                <input type="hidden" name="travelDocumentId" value="{{ $travelDocument->id }}">
+                <!-- <input type="hidden" name="travelDocumentId" value="{{ $travelDocument->id }}"> -->
                 <button 
                   type="submit" 
                   class="bg-blue-500 hover:bg-blue-400 text-white rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">

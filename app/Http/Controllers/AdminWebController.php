@@ -102,7 +102,7 @@ class AdminWebController extends Controller
     public function printShippings($id){
         $travelDocument = TravelDocument::findOrFail($id);
 
-        return view('print-shipping', compact('travelDocument'));
+        return view('General.shippings-print', compact('travelDocument'));
     }
 
 
