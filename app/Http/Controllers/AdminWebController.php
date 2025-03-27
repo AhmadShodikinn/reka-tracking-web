@@ -100,8 +100,7 @@ class AdminWebController extends Controller
 
     // Print SJN
     public function printShippings($id){
-        $travelDocument = TravelDocument::findOrFail($id);
-
+        $travelDocument = TravelDocument::with('items')->findOrFail($id);
         return view('General.shippings-print', compact('travelDocument'));
     }
 
