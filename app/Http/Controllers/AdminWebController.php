@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TravelDocument;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdminWebController extends Controller
 {
@@ -101,7 +102,9 @@ class AdminWebController extends Controller
     // Print SJN
     public function printShippings($id){
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
-        return view('General.shippings-print', compact('travelDocument'));
+
+        $qrCode = QrCode::format('svg')->size(200)->generate($id);
+        return view('General.shippings-print', compact('travelDocument', 'qrCode'));
     }
 
 

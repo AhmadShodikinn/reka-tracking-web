@@ -35,8 +35,8 @@
             </div>
 
             <!-- QR Code di kanan -->
-            <div class="flex justify-center items-center">
-                <img src="{{ asset('images/icons/QR_code_example.svg') }}" alt="QR Code" class="w-30 h-30"> 
+            <div class="flex justify-center items-center w-28 h-28">
+                {{ $qrCode }}
             </div>
         </div>
         
@@ -124,9 +124,6 @@
                 </tbody>
             </table>
         </div>
-
-
-
-
+    </div>
 </body>
 </html>
