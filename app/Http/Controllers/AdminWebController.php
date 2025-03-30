@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TravelDocument;
-use Barryvdh\DomPDF\PDF as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -103,19 +103,16 @@ class AdminWebController extends Controller
     // Print SJN
     public function printShippings($id){
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
-
         $qrCode = QrCode::format('svg')->size(200)->generate($id);
-        return view('General.shippings-print', compact('travelDocument', 'qrCode'));
+    
+        $pdf = PDF::loadView('General.shippings-print', compact('travelDocument', 'qrCode'));
+        $pdf->setPaper('A4', 'portrait');
+        return $pdf->stream('shipping_'.$id.'.pdf', ['Attachment' => false]);
+
+        // return $pdf->download('shipping_'.$id.'.pdf');
+        // return view('General.shippings-print', compact('travelDocument', 'qrCode'));
     }
 
-    public function printPdf() {
-        $page = view('General.shippings-print')->render();
-        
-        $pdf = PDF::loadHTML($page);
-
-        return $pdf->download('shipping.pdf');
-
-    }
 
 
 
