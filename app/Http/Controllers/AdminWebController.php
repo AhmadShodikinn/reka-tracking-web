@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
@@ -111,6 +112,23 @@ class AdminWebController extends Controller
 
         // return $pdf->download('shipping_'.$id.'.pdf');
         // return view('General.shippings-print', compact('travelDocument', 'qrCode'));
+    }
+
+    public function showTracker($track_id)
+    {
+        // Ambil data TrackingSystem berdasarkan track_id
+        $trackingSystem = TrackingSystem::with('track') // Mengambil relasi Track
+            ->where('track_id', $track_id)
+            ->firstOrFail();
+
+        // Ambil data lokasi dari TrackingSystem yang terkait dengan track_id
+        $locations = TrackingSystem::where('track_id', $track_id)
+            ->get(['latitude', 'longitude']); // Ambil hanya kolom latitude dan longitude
+
+        // Ambil koordinat awal peta berdasarkan lokasi pertama
+        $initialLocation = $locations->isNotEmpty() ? [$locations[0]->latitude, $locations[0]->longitude] : [0, 0];
+
+        return view('General.tracker', compact('trackingSystem', 'locations', 'initialLocation'));
     }
 
 
