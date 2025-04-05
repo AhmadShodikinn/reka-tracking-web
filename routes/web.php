@@ -48,10 +48,10 @@ Route::get('/print-shippings/{id}', [AdminWebController::class, 'printShippings'
 //     return view('General.shippings');
 // })->name('shippings')->middleware('auth');
 
-Route::get('/tracking/{track_id}', [AdminWebController::class, 'showTracker'])
-    ->name('tracking')
-    ->middleware('auth');
+// Route::get('/tracking/{track_id}', [AdminWebController::class, 'showTracker'])
+    // ->name('tracking')
+    // ->middleware('auth');
 
-// Route::get('/tracking', function () {
-//     return view('General.tracker');
-// })->name('tracking')->middleware('auth');
+Route::get('/tracking', function () {
+    return view('General.tracker');
+})->name('tracking')->middleware('auth');

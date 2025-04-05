@@ -1,78 +1,67 @@
 <!doctype html>
-<html lang="en">
-  <head>
+<html lang="id">
+<head>
     <meta charset="UTF-8" />
     <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+        name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-      Lacak Pengiriman | Rekatrack
+        Manajemen Pengiriman | Rekatrack
     </title>
-
-    <!-- Link untuk Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-
-    <!-- Link untuk Routing Machine CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
-
-    <!-- Vite CSS & JS -->
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
-    
-    <!-- Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
-  </head>
-  <body
-    x-data="{ map: null, initialLocation: @json($initialLocation), locations: @json($locations), routeControl: null }"
+</head>
+<body
+    x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
     x-init="
-      map = L.map('map').setView([initialLocation[0], initialLocation[1]], 13);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '
-      }).addTo(map);
-      
-      let latlngs = locations.map(loc => [loc.latitude, loc.longitude]);
-      routeControl = L.Routing.control({
-        waypoints: latlngs.map(latlng => L.latLng(latlng)),
-        routeWhileDragging: true,
-        createMarker: function() {} // Menyembunyikan marker waypoint
-      }).addTo(map);
-
-      let lastLatLng = latlngs[latlngs.length - 1];
-      L.marker(lastLatLng).addTo(map).bindPopup('Tujuan Pengiriman');
-    "
-  >
-    <!-- ===== Preloader Start ===== -->
+        darkMode = JSON.parse(localStorage.getItem('darkMode'));
+        $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+    :class="{'dark bg-gray-900': darkMode === true}"
+>
     @include('partials.preloader')
-    <!-- ===== Preloader End ===== -->
-
-    <!-- ===== Page Wrapper Start ===== -->
     <div class="flex h-screen overflow-hidden">
-      <!-- ===== Sidebar Start ===== -->
-      @include('Template.sidebar')
-      <!-- ===== Sidebar End ===== -->
+        @include('Template.sidebar')
+        <div
+            class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto"
+        >
+            @include('partials.overlay')
+            @include('Template.header')
+            <main class="relative">
+                <div class="absolute top-0 left-0 z-10 w-full h-[50px] p-2 bg-white bg-opacity-70 rounded-md shadow-lg">
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Cari Paket Pengiriman..."
+                        class="w-full h-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-blue-500"
+                    />
+                </div>
 
-      <!-- ===== Content Area Start ===== -->
-      <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
-        <!-- Small Device Overlay Start -->
-        @include('partials.overlay')
-        <!-- Small Device Overlay End -->
+                <div id="map" class="h-[600px] w-full mt-[50px] relative"></div>
+            </main>
 
-        <!-- ===== Header Start ===== -->
-        @include('Template.header')
-        <!-- ===== Header End ===== -->
 
-        <!-- ===== Main Content Start ===== -->
-        <main>
-          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-            <div id="map" style="height: 500px;"></div> <!-- Tempat peta akan ditampilkan -->
-          </div>
-        </main>
-        <!-- ===== Main Content End ===== -->
-      </div>
-      <!-- ===== Content Area End ===== -->
+        </div>
     </div>
-    <!-- ===== Page Wrapper End ===== -->
-  </body>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        var center = [-7.61617286255246, 111.52143728913316];
+
+        // Inisialisasi peta dengan Leaflet
+        var map = L.map("map").setView(center, 10); 
+
+        // Menambahkan layer OpenStreetMap
+        L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Menambahkan marker pada posisi tertentu
+        L.marker(center).addTo(map);
+    </script>
+
+</body>
 </html>
