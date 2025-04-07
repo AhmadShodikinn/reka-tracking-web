@@ -55,3 +55,5 @@ Route::get('/print-shippings/{id}', [AdminWebController::class, 'printShippings'
 Route::get('/tracking', function () {
     return view('General.tracker');
 })->name('tracking')->middleware('auth');
+
+Route::get('/search-travel-document', [AdminWebController::class, 'search']);

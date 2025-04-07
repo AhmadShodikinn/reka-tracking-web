@@ -132,6 +132,40 @@ class AdminWebController extends Controller
     }
 
 
+    public function search(Request $request)
+    {
+        // dd($request->all());
+        $noTravelDocument = $request->query('no_travel_document');
+
+        // Mencari TravelDocument berdasarkan nomor surat jalan
+        $travelDocument = TravelDocument::where('no_travel_document', $noTravelDocument)
+            ->with(['trackingSystems.track.locations'])
+            ->first();
+
+        if ($travelDocument) {
+            // Ambil lokasi dari tracking system
+            $locations = [];
+            foreach ($travelDocument->trackingSystems as $trackingSystem) {
+                foreach ($trackingSystem->track->locations as $location) {
+                    $locations[] = [
+                        'latitude' => $location->latitude,
+                        'longitude' => $location->longitude,
+                    ];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'locations' => $locations,
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Travel Document tidak ditemukan',
+        ]);
+    }
+
 
 
 

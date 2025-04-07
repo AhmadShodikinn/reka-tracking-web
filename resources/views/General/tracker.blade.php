@@ -29,16 +29,17 @@
             @include('partials.overlay')
             @include('Template.header')
             <main class="relative">
-                <div class="absolute top-0 left-0 z-10 w-full h-[50px] p-2 bg-white bg-opacity-70 rounded-md shadow-lg">
-                    <input
-                        type="text"
-                        id="search"
-                        placeholder="Cari Paket Pengiriman..."
-                        class="w-full h-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-blue-500"
-                    />
-                </div>
+            <div class="absolute top-0 left-0 z-10 w-full p-2 bg-white bg-opacity-70 rounded-md shadow-lg">
+                <input
+                    type="text"
+                    id="search"
+                    placeholder="Cari Paket Pengiriman..."
+                    class="w-[500px] h-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-blue-500"
+                />
+                <button onclick="searchTracking()" class="bg-blue-500 text-white px-4 py-1 rounded-md mt-2">Cari</button>
+            </div>
 
-                <div id="map" class="h-[600px] w-full mt-[50px] relative"></div>
+                <div id="map" class="h-[600px] w-full mt-[70px] relative"></div>
             </main>
 
 
@@ -51,16 +52,94 @@
     <script>
         var center = [-7.61617286255246, 111.52143728913316];
 
-        // Inisialisasi peta dengan Leaflet
         var map = L.map("map").setView(center, 10); 
 
-        // Menambahkan layer OpenStreetMap
         L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 18,
         }).addTo(map);
 
-        // Menambahkan marker pada posisi tertentu
         L.marker(center).addTo(map);
+    </script>
+
+    <script>
+        function searchTracking() {
+            var searchQuery = document.getElementById("search").value;
+            
+            if (searchQuery) {
+                fetch(`/search-travel-document?no_travel_document=${searchQuery}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data); 
+                        if (data.success) {
+                            updateMapWithLocations(data.locations);
+                        } else {
+                            alert('Data tidak ditemukan');
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Terjadi kesalahan:", error);
+                        alert('Gagal mengambil data');
+                    });
+            } else {
+                alert('Masukkan nomor surat jalan');
+            }
+        }
+
+        function updateMapWithLocations(locations) {
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            const latLngs = locations.map(location => [location.latitude, location.longitude]);
+
+            if (latLngs.length > 1) {
+                var start = latLngs[0];
+                var end = latLngs[latLngs.length - 1];
+                
+                var apiKey = '5b3ce3597851110001cf6248b4c0aaa51d204cea888ada05975d8638'; // API
+
+                function getRoute(start, end) {
+                    var url = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${apiKey}&start=${start[1]},${start[0]}&end=${end[1]},${end[0]}`;
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            var route = data.features[0].geometry.coordinates;
+                            var latlngs = route.map(function(coord) {
+                                return [coord[1], coord[0]];  
+                            });
+
+                            L.polyline(latlngs, { color: 'blue', weight: 4, opacity: 0.7 }).addTo(map);
+                            map.fitBounds(L.latLngBounds(latlngs));
+                        })
+                        .catch(error => console.error('Error fetching route:', error));
+                }
+
+                getRoute(start, end);
+            }
+
+            // locations.forEach(location => {
+            //     const latLng = [location.latitude, location.longitude];
+            //     L.marker(latLng).addTo(map).bindPopup(`Lokasi: ${location.latitude}, ${location.longitude}`);
+            // });
+
+            // if (latLngs.length === 1) {
+            //     L.marker(latLngs[0]).addTo(map);
+            // }
+
+            // if (latLngs.length > 1) {
+            //     map.fitBounds(L.latLngBounds(latLngs));
+            // }
+
+            const lastLocation = locations[locations.length - 1];
+            const lastLatLng = [lastLocation.latitude, lastLocation.longitude];
+            L.marker(lastLatLng).addTo(map).bindPopup(`Lokasi: ${lastLocation.latitude}, ${lastLocation.longitude}`);
+
+            map.setView(lastLatLng, 13);
+
+        }
     </script>
 
 </body>
