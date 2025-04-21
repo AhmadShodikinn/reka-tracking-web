@@ -104,51 +104,13 @@
                       </div>
                     </div>
                     <!-- Checkbox -->
-                    <div class="flex items-center justify-between">
-                      <div x-data="{ checkboxToggle: false }">
-                        <label
-                          for="checkboxLabelOne"
-                          class="flex items-center text-sm font-normal text-gray-700 cursor-pointer select-none dark:text-gray-400"
-                        >
-                          <div class="relative">
-                            <input
-                              type="checkbox"
-                              id="checkboxLabelOne"
-                              class="sr-only"
-                              @change="checkboxToggle = !checkboxToggle"
-                            />
-                            <div
-                              :class="checkboxToggle ? 'border-brand-500 bg-brand-500' : 'bg-transparent border-gray-300 dark:border-gray-700'"
-                              class="mr-3 flex h-5 w-5 items-center justify-center rounded-md border-[1.25px]"
-                            >
-                              <span :class="checkboxToggle ? '' : 'opacity-0'">
-                                <svg
-                                  width="14"
-                                  height="14"
-                                  viewBox="0 0 14 14"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
-                                    stroke="white"
-                                    stroke-width="1.94437"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                  />
-                                </svg>
-                              </span>
-                            </div>
-                          </div>
-                          Keep me logged in
-                        </label>
-                      </div>
+                    <!-- <div class="flex items-center justify-end">
                       <a
                         href="/reset-password.html"
                         class="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                         >Forgot password?</a
                       >
-                    </div>
+                    </div> -->
                     <!-- Button -->
                     <div>
                       <button
@@ -159,7 +121,7 @@
                     </div>
                   </div>
                 </form>
-                <div class="mt-5">
+                <!-- <div class="mt-5">
                   <p
                     class="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start"
                   >
@@ -170,7 +132,7 @@
                       >Sign Up</a
                     >
                   </p>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -184,14 +146,16 @@
           <div class="flex items-center justify-center z-1">
             <!-- ===== Common Grid Shape Start ===== -->
             @include('partials.common-grid-shape')
-            <div class="flex flex-col items-center max-w-xs">
-              <a href="index.html" class="block mb-4">
-                <img src="./images/logo/auth-logo.svg" alt="Logo" />
-              </a>
+            <div class="flex flex-col items-center max-w-md">
+              <div class="flex items-center mb-4 space-x-2">
+                <img src="./images/logo/icon-reka.png" alt="Icon" class="h-8" />
+                <img src="./images/logo/logo-track.png" alt="Logo" class="h-9" />
+              </div>
               <p class="text-center text-gray-400 dark:text-white/60">
-                Sistem Informasi Logistik PT.Rekaindo Global Jasa INKA GROUP
+                Sistem Manajemen Distribusi Barang PT.Rekaindo Global Jasa.
               </p>
             </div>
+
           </div>
         </div>
         <!-- Toggler -->

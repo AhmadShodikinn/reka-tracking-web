@@ -28,21 +28,30 @@
         >
             @include('partials.overlay')
             @include('Template.header')
-            <main class="relative">
-            <div class="absolute top-0 left-0 z-10 w-full p-2 bg-white bg-opacity-70 rounded-md shadow-lg">
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="Cari Paket Pengiriman..."
-                    class="w-[500px] h-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-blue-500"
-                />
-                <button onclick="searchTracking()" class="bg-blue-500 text-white px-4 py-1 rounded-md mt-2">Cari</button>
-            </div>
+            <main class="flex flex-col h-screen">
+                <div class="bg-white z-10 shadow-md">
+                <div class="bg-white dark:bg-black bg-opacity-70 p-2">
+                    <div class="flex space-x-2">
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Cari Paket Pengiriman..."
+                        class="flex-1 px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-gray-200 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                    <button
+                        onclick="searchTracking()"
+                        class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                    >
+                        Cari
+                    </button>
+                    </div>
+                </div>
+                </div>
 
-                <div id="map" class="h-[600px] w-full mt-[70px] relative"></div>
+                <div class="flex-1 relative">
+                    <div id="map" class="absolute top-0 left-0 w-full h-full"></div>
+                </div>
             </main>
-
-
         </div>
     </div>
 
@@ -53,7 +62,7 @@
         var center = [-7.61617286255246, 111.52143728913316];
 
         var map = L.map("map").setView(center, 10); 
-
+    
         L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 18,
         }).addTo(map);

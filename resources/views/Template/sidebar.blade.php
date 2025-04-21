@@ -4,27 +4,34 @@
 >
   <!-- SIDEBAR HEADER -->
   <div
-    :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-    class="flex items-center gap-2 pt-8 sidebar-header pb-7"
+  :class="sidebarToggle ? 'justify-center' : 'justify-between'"
+  class="flex items-center gap-2 pt-8 sidebar-header pb-7"
   >
-    <a href="index.html">
+    <a href="#" class="flex items-center gap-2">
+      <!-- Icon tambahan di sebelah kiri -->
+      <img
+        class="h-6"
+        src="/images/logo/icon-reka.png"
+        alt="Icon"
+        :class="sidebarToggle ? 'hidden' : ''"
+      />
+
+      <!-- Logo teks (tersembunyi saat sidebar toggle aktif) -->
       <span class="logo" :class="sidebarToggle ? 'hidden' : ''">
-        <img class="dark:hidden" src="{{ asset('images/logo/logo.svg') }}" alt="Logo" />
-        <img
-          class="hidden dark:block"
-          src="{{ asset('images/logo/logo.svg') }}"
-          alt="Logo"
-        />
+        <img class="dark:hidden h-8" src="/images/logo/logo-track.png" alt="Logo" />
+        <img class="hidden dark:block h-8" src="/images/logo/logo-track.png" alt="Logo" />
       </span>
 
+      <!-- Logo ikon (hanya muncul saat sidebar toggle aktif) -->
       <img
-        class="logo-icon"
+        class="logo-icon h-6"
         :class="sidebarToggle ? 'lg:block' : 'hidden'"
-        src="{{ asset('images/logo/logo.svg') }}"
+        src="/images/logo/icon-reka.png"
         alt="Logo"
       />
     </a>
   </div>
+
   <!-- SIDEBAR HEADER -->
   <div
     class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar"
