@@ -104,14 +104,24 @@ class AdminWebController extends Controller
     // Print SJN
     public function printShippings($id){
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
-        $qrCode = QrCode::format('svg')->size(200)->generate($id);
-    
+        // $qrCode = QrCode::format('svg')->size(200)->generate($id);
+
+        $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($id));
+
+        // dd($qrCode);
+
         $pdf = PDF::loadView('General.shippings-print', compact('travelDocument', 'qrCode'));
-        $pdf->setPaper('A4', 'portrait');
-        return $pdf->stream('shipping_'.$id.'.pdf', ['Attachment' => false]);
+        // $pdf->setOptions([
+        //     'isHtml5ParserEnabled' => true,
+        //     'isRemoteEnabled' => true,
+        // ]);
+    
+        // $pdf->setPaper('A4', 'portrait');
+    
+        return $pdf->stream();
 
         // return $pdf->download('shipping_'.$id.'.pdf');
-        // return view('General.shippings-print', compact('travelDocument', 'qrCode'));
+        return view('General.shippings-print', compact('travelDocument', 'qrCode'));
     }
 
     public function showTracker($track_id)
