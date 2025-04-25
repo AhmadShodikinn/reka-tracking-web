@@ -168,7 +168,12 @@
             <!-- End Table Content -->
 
             <div class="justify-end flex space-x-4 py-4">
-              <!-- Cetak Surat Jalan Button -->
+              <a href="{{ route('shippings.edit', ['id' => $travelDocument->id ]) }}"
+                class="bg-gray-600 hover:bg-gray-500 text-white rounded-md px-3.5 py-2.5 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                Edit Surat Jalan
+              </a>
+            
+            <!-- Cetak Surat Jalan Button -->
               <form action="{{ route('shippings.print', ['id' => $travelDocument->id ]) }}" method="GET">
                 @csrf
                 <!-- Hidden Field to Send travelDocument ID -->
@@ -179,6 +184,7 @@
                   Cetak Surat Jalan
                 </button>
               </form>
+
             </div>
 
 

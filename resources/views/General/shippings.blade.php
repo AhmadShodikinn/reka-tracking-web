@@ -158,7 +158,7 @@
                                          detail
                                      </button>
                                  </form>
-                                 <form action="#" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
+                                 <form action="{{ route('shippings.destroy', ['id' => $data['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
                                      @csrf
                                      @method('DELETE')
                                      <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>

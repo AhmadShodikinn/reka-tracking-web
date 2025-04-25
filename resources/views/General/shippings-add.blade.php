@@ -125,8 +125,6 @@
                 </div>
               </div>
               
-
-
               <div class="space-y-6">
                 <div x-data="{ totalBarang: 1, forms: [{ itemName:'', itemCode: '', quantitySend: '', unitType: '', description: '', totalSend: '', information: '', qtyPreOrder:'' }] }" class="py-4">
                   <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">

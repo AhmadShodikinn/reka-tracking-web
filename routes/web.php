@@ -51,7 +51,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/add-shippings', [AdminWebController::class, 'shippingsAdd'])->name('shippings.add');
     Route::post('/shippings', [AdminWebController::class, 'shippingsAddTravelDocument'])->name('shippings.store');
     Route::delete('/shippings/{id}', [AdminWebController::class, 'shippingsDelete'])->name('shippings.destroy');
-    
+
+    Route::get('/shippings/{id}/edit', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit');
+    Route::put('/shippings/{id}', [AdminWebController::class, 'shippingsUpdate'])->name('shippings.update');
+
     //jaga-jaga
     // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit')->middleware('auth');
     // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsUpdate'])->name('shippings.update')->middleware('auth');

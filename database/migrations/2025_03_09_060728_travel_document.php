@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('project');
             $table->enum('status', ['terkirim', 'belum terkirim']);
             $table->timestamps();
+            $table->softDeletes();
         });
         
     }
