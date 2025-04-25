@@ -13,7 +13,7 @@ class SuperAdminWebController extends Controller
     //super admin handling management user
     //showing page
     public function index() {
-        $users = User::all();
+        $users = User::paginate(10);
         return view('General.users', compact('users')); 
     }
 

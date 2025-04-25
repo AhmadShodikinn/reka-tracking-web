@@ -97,7 +97,7 @@
                        </th>
                        <th class="px-5 py-3 sm:px-6">
                          <div class="flex items-center">
-                           <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nomor Refensi</p>
+                           <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Nomor Ref</p>
                          </div>
                        </th>
                        <th class="px-5 py-3 sm:px-6">
@@ -136,9 +136,9 @@
                            <td class="px-5 py-4 sm:px-6">
                                <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->no_travel_document }}</p> 
                            </td>
-                           <td class="px-5 py-4 sm:px-6">
+                           <!-- <td class="px-5 py-4 sm:px-6">
                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->reference_number }}</p> 
-                            </td>
+                            </td> -->
                             <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ \Carbon\Carbon::parse($data->date_no_travel_document)->format('d/m/Y') }}</p>
                             </td>
@@ -170,6 +170,17 @@
  
                    </tbody>
                  </table>
+
+                 <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                  <p class="text-sm text-gray-500 dark:text-gray-300 mb-2 sm:mb-0">
+                      Menampilkan {{ $listTravelDocument->firstItem() }} ke {{ $listTravelDocument->lastItem() }} dari total {{ $listTravelDocument->total() }} data
+                  </p>
+                  <div>
+                      {{ $listTravelDocument->links('pagination::tailwind') }}
+                  </div>
+                </div>
+
+
                </div>
              </div>
  

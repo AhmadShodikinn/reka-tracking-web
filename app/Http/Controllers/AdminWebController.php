@@ -12,7 +12,7 @@ class AdminWebController extends Controller
 {
     // Admin handling management SJN
     public function shippingsIndex() {
-        $listTravelDocument = TravelDocument::all();
+        $listTravelDocument = TravelDocument::paginate(10);
 
         return view('General.shippings', compact('listTravelDocument')); //set view
     }

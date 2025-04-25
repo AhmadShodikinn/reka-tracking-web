@@ -125,7 +125,9 @@
                   @foreach($users as $index => $user)
                       <tr>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> <!-- Nomor urut -->
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                                  {{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}
+                              </p> <!-- Nomor urut -->
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $user->nip }}</p> <!-- Nomor urut -->
@@ -164,6 +166,17 @@
 
                   </tbody>
                 </table>
+
+                <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                  <p class="text-sm text-gray-500 dark:text-gray-300 mb-2 sm:mb-0">
+                      Menampilkan {{ $users->firstItem() }} ke {{ $users->lastItem() }} dari total {{ $users->total() }} data
+                  </p>
+                  <div>
+                      {{ $users->links('pagination::tailwind') }}
+                  </div>
+                </div>
+
+                
               </div>
             </div>
 
