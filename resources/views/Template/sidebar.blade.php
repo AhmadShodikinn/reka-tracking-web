@@ -45,7 +45,7 @@
             class="menu-group-title"
             :class="sidebarToggle ? 'lg:hidden' : ''"
           >
-            Super Admin
+            Admin
           </span>
 
           <svg

@@ -19,7 +19,7 @@
           darkMode = JSON.parse(localStorage.getItem('darkMode'));
           $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
      :class="{'dark bg-gray-900': darkMode === true}"
-   >
+   >   
      <!-- ===== Preloader Start ===== -->
      @include('partials.preloader')
      <!-- ===== Preloader End ===== -->
@@ -41,9 +41,18 @@
          <!-- ===== Header Start ===== -->
          @include('Template.header')
          <!-- ===== Header End ===== -->
+
+        
+         @include('partials.alert.alert')
  
          <!-- ===== Main Content Start ===== -->
          <main>
+          
+          <!-- ===== alert Start ===== -->
+          @include('partials.alert.alert')
+          <!-- ===== alert end ===== -->
+
+
          <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
              <div x-data="{ pageName: `Manajemen Pengiriman`, subPageName: ''}">
                  @include('Template.breadcrumb')

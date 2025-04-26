@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthWebController extends Controller
 {
-    public function login(Request $request) {
-        // dd($request->all());
-
+    public function login(Request $request){
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
@@ -20,12 +18,24 @@ class AuthWebController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        if (Auth::attempt((['email' => $request->email, 'password' => $request->password]))) {
-            return redirect()->route('dashboard');
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+
+            if ($user->role && $user->role->name === 'Super Admin') {
+                return redirect()->route('users.index');
+            } elseif ($user->role && $user->role->name === 'Admin') {
+                return redirect()->route('shippings.index');
+            }
+
+            // Role tidak dikenal
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Role tidak dikenali.');
         }
 
-        return redirect()->back()->with('error', 'Email or password is wrong');
+        return redirect()->back()->with('error', 'Email atau password salah.');
     }
+
+
 
     public function logout() {
         Auth::logout();

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminWebController;
 use App\Http\Controllers\AuthWebController;
 use App\Http\Controllers\ProfileWebController;
 use App\Http\Controllers\SuperAdminWebController;
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -36,15 +37,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/profile/update', [ProfileWebController::class, 'update'])->name('profile.update');
 
-    //Superadmin Route
-    Route::get('/users', [SuperAdminWebController::class, 'index'])->name('users.index');
-    Route::get('/users/{id}', [SuperAdminWebController::class, 'edit'])->name('users.edit');
-    Route::get('/add-user', [SuperAdminWebController::class, 'add'])->name('users.add');
-
-    Route::post('/users', [SuperAdminWebController::class, 'register'])->name('users.store');
-    Route::put('/users/{id}', [SuperAdminWebController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [SuperAdminWebController::class, 'delete'])->name('users.destroy');
-
     //Admin Route
     Route::get('/shippings', [AdminWebController::class, 'shippingsIndex'])->name('shippings.index');
     Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsDetail'])->name('shippings.detail');
@@ -69,7 +61,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/search-travel-document', [AdminWebController::class, 'search']);
 });
 
-
+Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(function () {
+    Route::get('/users', [SuperAdminWebController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}', [SuperAdminWebController::class, 'edit'])->name('users.edit');
+    Route::get('/add-user', [SuperAdminWebController::class, 'add'])->name('users.add');
+    Route::post('/users', [SuperAdminWebController::class, 'register'])->name('users.store');
+    Route::put('/users/{id}', [SuperAdminWebController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [SuperAdminWebController::class, 'delete'])->name('users.destroy');
+});
 
 
 

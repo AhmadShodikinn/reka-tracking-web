@@ -25,4 +25,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Track::class, 'driver_id');
     }
+
+    public function hasAnyRelationship() {
+    if ($this->tracks()->exists()) { 
+        return true;
+    }
+    
+    return false; 
+}
 }

@@ -93,16 +93,13 @@ class AdminWebController extends Controller
 
     public function shippingsDelete($id) {
         $travelDocument = TravelDocument::findOrFail($id);
-        // $travelDocument->items()->delete();
-        // $travelDocument->delete();
 
-        // Soft delete
         foreach ($travelDocument->items as $item) {
             $item->delete();
         }
         $travelDocument->delete();
 
-        return redirect()->route('shippings.index');
+        return redirect()->route('shippings.index')->with('success', 'Data berhasil dihapus.');
     }
 
 
@@ -158,6 +155,8 @@ class AdminWebController extends Controller
         }
 
         $travelDocument->items()->createMany($items);
+
+        return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
     }
 
     // Print SJN

@@ -51,7 +51,7 @@ class SuperAdminWebController extends Controller
             'phone_number' => $request->telephone,
             'role_id' => $request->role,
         ]);
-        return redirect()->route('dashboard'); //set view
+        return redirect()->route('General.users')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id) {
@@ -76,14 +76,24 @@ class SuperAdminWebController extends Controller
         $user->role_id = $request->role;
         $user->save();
 
-        return redirect()->route('dashboard'); //set view
+        return redirect()->route('General.users')->with('success', 'Pengguna berhasil diperbarui.');
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $user = User::findOrFail($id);
+
+        if ($user->role->name == 'Super Admin') {
+            return redirect()->route('users.index')->with('error', 'Super Admin tidak dapat dihapus.');
+        }
+
+        if ($user->hasAnyRelationship()) {
+            return redirect()->route('users.index')->with('error', 'Pengguna ini tidak bisa dihapus karena masih terikat dengan data lain.');
+        }
+
         $user->delete();
 
-        return redirect()->route('dashboard'); //set view
+        return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
     }
 
 
