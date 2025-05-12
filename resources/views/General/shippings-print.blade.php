@@ -6,11 +6,16 @@
     <style>
         @page {
             size: A4;
-            margin: 0;
+            margin: 2mm;
         }
         body {
             margin: 5mm;
             font-family: 'Helvetica', 'Arial', sans-serif;
+        }
+
+        .page {
+            height: 100%;
+            position: relative;
         }
 
         table {
@@ -65,10 +70,19 @@
         .info-table-left .title, .info-table-right .title {
             font-weight: bold;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div style="text-align: left;">
+@foreach(['ARSIP', 'DIBAWA'] as $label)
+<div class="page">
+    
+    <div style="text-align: right;">
+        <div style="position: relative; display: inline-block; text-align: center; width: 80px; font-size: 0.75rem; font-weight: bold; background-color: #fff; border: 1px solid #000; padding: 5px 10px;">
+            {{ $label }}
+        </div>
 
         <!-- Header -->
         <table style="width: 100%; margin-bottom: 1rem;">
@@ -84,7 +98,7 @@
 
                 <!-- Kanan: QR Code -->
                 <td style="width: 30%; text-align: right; vertical-align: top;">
-                    <img src="data:image/png;base64, {!! $qrCode !!}" alt="QR Code" style="max-width: 100px; height: auto;">
+                    <img src="data:image/png;base64, {!! $qrCode !!}" alt="QR Code" style="max-width: 100px; height: auto; margin-top: 0.5rem;">
                 </td>
             </tr>
         </table>
@@ -99,10 +113,17 @@
 
         <!-- Info Pengiriman dalam tabel -->
         <table style="width: 100%; margin-top: 1rem; margin-bottom: 1rem;">
-            <tr>
-                <!-- Tabel Kiri -->
-                <td style="width: 50%; vertical-align: top; padding-right: 2rem;">
-                    <table style="width: 100%;">
+        <tr>
+            <!-- Tabel Kiri -->
+            <td style="width: 50%; vertical-align: top; padding-right: 2rem;">
+                <table style="width: 100%;">
+                    
+                    @if($label == 'DIBAWA')
+                        <tr>
+                            <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Proyek</td>
+                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->project }}</td>
+                        </tr>
+                    @else
                         <tr>
                             <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Proyek</td>
                             <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->project }}</td>
@@ -111,42 +132,53 @@
                             <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Kepada</td>
                             <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->send_to }}</td>
                         </tr>
-                        <tr>
-                            <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Tanggal</td>
-                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ \Carbon\Carbon::parse($travelDocument->date_no_travel_document)->format('d/m/Y') }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-size: 0.75rem; font-weight: bold; margin: 0;"">Jumlah Halaman</td>
-                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;"">: 1 dari 1</td>
-                        </tr>
-                    </table>
-                </td>
+                    @endif
+                    <tr>
+                        <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Tanggal</td>
+                        <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ \Carbon\Carbon::parse($travelDocument->date_no_travel_document)->format('d/m/Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Jumlah Halaman</td>
+                        <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: 1 dari 1</td>
+                    </tr>
+                </table>
+            </td>
 
-                <!-- Tabel Kanan -->
-                <td style="width: 50%; vertical-align: top;">
+            <!-- Tabel Kanan -->
+            <td style="width: 50%; vertical-align: top;">
                 <table style="width: 100%;">
-                <!-- hidden buat atur style -->
-                <tr>
-                    <td style="font-size: 0.75rem; font-weight: bold; margin: 0; color:white;">PO</td>
-                    <td style="font-size: 0.75rem; font-weight: light; margin: 0; color:white;">: {{ $travelDocument->po_number }}</td>
-                </tr>
-                <tr>
-                    <td style="font-size: 0.75rem; font-weight: bold; margin: 0; color:white;">Ref</td>
-                    <td style="font-size: 0.75rem; font-weight: light; margin: 0; color:white;">: {{ $travelDocument->reference_number }}</td>
-                </tr>
 
-                <tr>
-                    <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">PO</td>
-                    <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->po_number }}</td>
-                </tr>
-                <tr>
-                    <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Ref</td>
-                    <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->reference_number }}</td>
-                </tr>
-            </table>
-                </td>
-            </tr>
-        </table>
+                    <!-- hidden buat atur style -->
+                    @if($label == 'DIBAWA')
+                        <tr>
+                            <td style="font-size: 0.75rem; font-weight: bold; margin: 0; color:white;">PO</td>
+                            <td style="font-size: 0.75rem; font-weight: light; margin: 0; color:white;">: {{ $travelDocument->po_number }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td style="font-size: 0.75rem; font-weight: bold; margin: 0; color:white;">PO</td>
+                            <td style="font-size: 0.75rem; font-weight: light; margin: 0; color:white;">: {{ $travelDocument->po_number }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 0.75rem; font-weight: bold; margin: 0; color:white;">Ref</td>
+                            <td style="font-size: 0.75rem; font-weight: light; margin: 0; color:white;">: {{ $travelDocument->reference_number }}</td>
+                        </tr>
+                    @endif
+                    
+                    
+
+                    <tr>
+                        <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">PO</td>
+                        <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->po_number }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Ref</td>
+                        <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->reference_number }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
 
         <!-- Tabel Barang -->
@@ -168,18 +200,20 @@
                     @foreach ($travelDocument->items as $index => $item)
                         <tr>
                             <td style="text-align: center;">{{ $index + 1 }}</td>
-                            <td>{{ $item->item_name }}</td>
+                            <td style="text-align: left;">{{ $item->item_name }}</td>
                             <td style="text-align: center;">{{ $item->item_code }}</td>
                             <td style="text-align: center;">{{ $item->qty_send }}</td>
                             <td style="text-align: center;">{{ $item->total_send }}</td>
                             <td style="text-align: center;">{{ $item->qty_po }}</td>
                             <td style="text-align: center;">{{ $item->unit }}</td>
-                            <td style="text-align: center;">{{ $item->description }}</td>
+                            <td style="text-align: left;">{{ $item->description }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+</div>
+@endforeach
 </body>
 </html>

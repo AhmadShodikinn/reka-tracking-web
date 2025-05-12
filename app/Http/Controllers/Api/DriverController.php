@@ -32,108 +32,137 @@ class DriverController extends Controller
         ]);
     }
 
-    // Driver handling logic send location
-    public function sendLocation(Request $request) {
+    // pada db masing menggunakan track id untuk bagian ini
+    public function sendLocation(Request $request)
+    {
         $request->validate([
-            'travel_document_id' => 'required|exists:travel_document,id',
+            'travel_document_id' => 'required|array',
+            'travel_document_id.*' => 'exists:travel_document,id',
             'latitude' => 'required',
             'longitude' => 'required',
             'driver_id' => 'required',
         ]);
 
-        $track = Track::where('driver_id', $request->driver_id)->whereHas('trackingSystems', function ($query) use ($request) {
-            $query->where('travel_document_id', $request->travel_document_id);
-        })->latest()->first();
+        $responses = [];
 
-        if (!$track) {
-            $track = Track::create([
-                'driver_id' => $request->driver_id,
+        foreach ($request->travel_document_id as $documentId) {
+            $track = Track::where('driver_id', $request->driver_id)
+                ->whereHas('trackingSystems', function ($query) use ($documentId) {
+                    $query->where('travel_document_id', $documentId);
+                })->latest()->first();
+
+            // Jika track tidak ada, buat baru dan set status menjadi aktif
+            if (!$track) {
+                $track = Track::create([
+                    'driver_id' => $request->driver_id,
+                    'time_stamp' => now(),
+                    'status' => 'active',
+                ]);
+
+                // Buat Tracking System baru
+                TrackingSystem::create([
+                    'track_id' => $track->id,
+                    'travel_document_id' => $documentId,
+                    'time_stamp' => now(),
+                    'status' => 'active',
+                ]);
+            } else {
+                // Update status jika sudah ada
+                TrackingSystem::updateOrCreate(
+                    [
+                        'track_id' => $track->id,
+                        'travel_document_id' => $documentId,
+                    ],
+                    [
+                        'time_stamp' => now(),
+                        'status' => 'active',
+                    ]
+                );
+            }
+
+            // Simpan lokasi
+            Location::create([
+                'track_id' => $track->id,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
                 'time_stamp' => now(),
+            ]);
+
+            $responses[] = [
+                'track_id' => $track->id,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
                 'status' => 'active',
-            ]);
-
-            $trackingSystem = TrackingSystem::create([
-                'track_id' => $track->id,
-                'travel_document_id' => $request->travel_document_id,
-                'time_stamp' => now(),
-                'status' => 'on the way',
-            ]);
-        } else {
-            $trackingSystem = TrackingSystem::firstOrCreate([
-                'track_id' => $track->id,
-                'travel_document_id' => $request->travel_document_id,
-            ], [
-                'time_stamp' => now(),
-                'status' => 'on the way',
-            ]);
+            ];
         }
 
-        $location = Location::create([
-            'track_id' => $track->id,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'time_stamp' => now(),
-        ]);
-
-        // Kembalikan respons sukses
         return response()->json([
-            'message' => 'Lokasi berhasil dikirim kepada sistem!.',
-            'tracking_system' => $trackingSystem,
-            'location' => $location,
+            'message' => 'Lokasi berhasil dikirim kepada sistem untuk semua dokumen!',
+            'data' => $responses,
         ], 201);
     }
 
-    //update status send SJN
-    public function updateStatusSendSJN(Request $request) {
+
+    // Update status tracking system untuk banyak dokumen
+    public function updateStatusSendSJN(Request $request)
+    {
         $request->validate([
-            'id' => 'required|exists:travel_document,id',
-            'status' => 'required|in:active',
+            'travel_document_id' => 'required|array',
+            'travel_document_id.*' => 'exists:travel_document,id',
         ]);
 
-        $trackingSystem = TrackingSystem::where('travel_document_id', $request->id)->latest()->first();
+        $responses = [];
 
-        if (!$trackingSystem) {
-            return response()->json([
-                'message' => 'Tracking system tidak ditemukan.',
-            ], 404);
-        }
+        foreach ($request->travel_document_id as $documentId) {
+            // Ambil tracking system terbaru berdasarkan travel_document_id
+            $trackingSystem = TrackingSystem::where('travel_document_id', $documentId)
+                ->orderBy('time_stamp', 'desc')
+                ->first();
 
-        if ($request->status === 'active') {
+            if (!$trackingSystem) {
+                $responses[] = [
+                    'travel_document_id' => $documentId,
+                    'message' => 'Tracking system tidak ditemukan.',
+                    'status' => 'error',
+                ];
+            }
+
             if ($trackingSystem->status === 'non-active') {
-                $trackingSystem->update([
-                    'status' => 'active',
-                ]);
-    
-                return response()->json([
-                    'message' => 'Status tracking system berhasil diubah menjadi active.',
-                    'tracking_system' => $trackingSystem,
-                ]);
-            } else {
-                return response()->json([
-                    'message' => 'Status tracking system sudah dalam kondisi active.',
-                ], 400);
+                $responses[] = [
+                    'travel_document_id' => $documentId,
+                    'message' => 'Status sudah non-active.',
+                    'status' => 'warning',
+                ];
             }
-        }
 
-        if ($request->status === 'non-active') {
-            if ($trackingSystem->status === 'active') {
-                $trackingSystem->update([
-                    'status' => 'non-active',
-                ]);
-    
-                return response()->json([
-                    'message' => 'Status tracking system berhasil diubah menjadi non-active.',
-                    'tracking_system' => $trackingSystem,
-                ]);
-            } else {
-                return response()->json([
-                    'message' => 'Status tracking system sudah dalam kondisi non-active.',
-                ], 400);
-            }
+            // Update status menjadi non-active
+            $trackingSystem->update([
+                'status' => 'non-active',
+                'time_stamp' => now(),
+            ]);
+
+            // // Opsional: juga nonaktifkan track terkait jika ingin menghentikan pelacakan
+            // if ($trackingSystem->track && $trackingSystem->track->status !== 'non-active') {
+            //     $trackingSystem->track->update([
+            //         'status' => 'non-active',
+            //     ]);
+            // }
+
+            $responses[] = [
+                'travel_document_id' => $documentId,
+                'message' => 'Status berhasil diubah menjadi non-active.',
+                'status' => 'success',
+            ];
         }
 
         return response()->json([
-            'message' => 'Status tidak valid.',
-        ], 400);
+            'message' => 'Permintaan update status selesai diproses.',
+            'results' => $responses,
+        ]);
     }
+
+
+
+
+
 }
