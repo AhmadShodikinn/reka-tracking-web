@@ -78,6 +78,10 @@ class DriverController extends Controller
                         'status' => 'active',
                     ]
                 );
+
+                if ($track->status !== 'active') {
+                    $track->update(['status' => 'active']);
+                }
             }
 
             // Simpan lokasi
@@ -105,61 +109,78 @@ class DriverController extends Controller
 
     // Update status tracking system untuk banyak dokumen
     public function updateStatusSendSJN(Request $request)
-    {
-        $request->validate([
-            'travel_document_id' => 'required|array',
-            'travel_document_id.*' => 'exists:travel_document,id',
+{
+    $request->validate([
+        'travel_document_id' => 'required|array',
+        'travel_document_id.*' => 'exists:travel_document,id',
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+    ]);
+
+    $responses = [];
+
+    foreach ($request->travel_document_id as $documentId) {
+        // Ambil TrackingSystem terbaru
+        $trackingSystem = TrackingSystem::where('travel_document_id', $documentId)
+            ->orderBy('time_stamp', 'desc')
+            ->first();
+
+        if (!$trackingSystem) {
+            $responses[] = [
+                'travel_document_id' => $documentId,
+                'message' => 'Tracking system tidak ditemukan.',
+                'status' => 'error',
+            ];
+            continue;
+        }
+
+        if ($trackingSystem->status === 'non-active') {
+            $responses[] = [
+                'travel_document_id' => $documentId,
+                'message' => 'Status sudah non-active.',
+                'status' => 'non-active',
+            ];
+            continue;
+        }
+
+        // Update status TrackingSystem
+        $trackingSystem->update([
+            'status' => 'non-active',
+            'time_stamp' => now(),
         ]);
 
-        $responses = [];
+        // Simpan lokasi terakhir ke table Location (jika track tersedia)
+        if ($trackingSystem->track) {
+            $track = $trackingSystem->track;
 
-        foreach ($request->travel_document_id as $documentId) {
-            // Ambil tracking system terbaru berdasarkan travel_document_id
-            $trackingSystem = TrackingSystem::where('travel_document_id', $documentId)
-                ->orderBy('time_stamp', 'desc')
-                ->first();
-
-            if (!$trackingSystem) {
-                $responses[] = [
-                    'travel_document_id' => $documentId,
-                    'message' => 'Tracking system tidak ditemukan.',
-                    'status' => 'error',
-                ];
-            }
-
-            if ($trackingSystem->status === 'non-active') {
-                $responses[] = [
-                    'travel_document_id' => $documentId,
-                    'message' => 'Status sudah non-active.',
-                    'status' => 'warning',
-                ];
-            }
-
-            // Update status menjadi non-active
-            $trackingSystem->update([
-                'status' => 'non-active',
+            Location::create([
+                'track_id' => $trackingSystem->track->id,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
                 'time_stamp' => now(),
             ]);
 
-            // // Opsional: juga nonaktifkan track terkait jika ingin menghentikan pelacakan
-            // if ($trackingSystem->track && $trackingSystem->track->status !== 'non-active') {
-            //     $trackingSystem->track->update([
-            //         'status' => 'non-active',
-            //     ]);
-            // }
+            $allNonActive = $track->trackingSystems()->where('status', '!=', 'non-active')->count() === 0;
 
-            $responses[] = [
-                'travel_document_id' => $documentId,
-                'message' => 'Status berhasil diubah menjadi non-active.',
-                'status' => 'success',
-            ];
+            if ($allNonActive && $track->status !== 'non-active') {
+                $track->update(['status' => 'non-active']);
+            }
         }
 
-        return response()->json([
-            'message' => 'Permintaan update status selesai diproses.',
-            'results' => $responses,
-        ]);
+        $responses[] = [
+            'travel_document_id' => $documentId,
+            'message' => 'Status berhasil diubah menjadi non-active dan lokasi disimpan.',
+            'status' => 'success',
+        ];
+        
     }
+
+    return response()->json([
+        'message' => 'Permintaan update status selesai diproses.',
+        'results' => $responses,
+    ]);
+}
+
 
 
 
