@@ -20,6 +20,36 @@
         $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
     :class="{'dark bg-gray-900': darkMode === true}"
 >
+
+    <div
+         x-data="{ show: true, type: '', message: '' }"
+    x-init="
+        console.log('Alert init, show:', show);
+        window.addEventListener('alert', e => {
+            console.log('Alert event received:', e.detail);
+            type = e.detail.type;
+            message = e.detail.message;
+            show = true;
+            console.log('Show set to:', show);
+            setTimeout(() => show = true, 5000);
+        });
+    "
+        x-show="show"
+        :class="{
+            'border-error-500 bg-error-50': type === 'error',
+            'border-success-500 bg-success-50': type === 'success',
+            'border-info-500 bg-info-50': type === 'info',
+            'border-warning-500 bg-warning-50': type === 'warning'
+        }"
+        class="fixed top-5 right-5 rounded-xl border p-4 transition duration-500 z-50 w-96"
+    >
+        <div class="flex items-start gap-3">
+            <div class="text-sm font-semibold text-gray-800" x-text="type.toUpperCase() + ' MESSAGE'"></div>
+            <div class="text-sm text-gray-500" x-text="message"></div>
+        </div>
+    </div>
+
+
     @include('partials.preloader')
     <div class="flex h-screen overflow-hidden">
         @include('Template.sidebar')
@@ -71,26 +101,30 @@
     </script>
 
     <script>
+       function showCustomAlert(type, message) {
+            alert(type + '\n' + message);
+        }
+
+
         function searchTracking() {
             var searchQuery = document.getElementById("search").value;
-            
+
             if (searchQuery) {
                 fetch(`/search-travel-document?no_travel_document=${searchQuery}`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data); 
                         if (data.success) {
                             updateMapWithLocations(data.locations);
                         } else {
-                            alert('Data tidak ditemukan');
+                            showCustomAlert('error', 'Data tidak ditemukan');
                         }
                     })
                     .catch(error => {
                         console.error("Terjadi kesalahan:", error);
-                        alert('Gagal mengambil data');
+                        showCustomAlert('error', 'Gagal mengambil data');
                     });
             } else {
-                alert('Masukkan nomor surat jalan');
+                showCustomAlert('warning', 'Masukkan nomor surat jalan');
             }
         }
 

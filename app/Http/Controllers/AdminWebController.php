@@ -111,53 +111,105 @@ class AdminWebController extends Controller
     }
 
     // Create SJN
-    public function shippingsAddTravelDocument(Request $request) {
-        $validated = $request->validate([
-            'sendTo' => 'required',
-            'numberSJN' => 'required',
-            'numberRef' => 'required',
-            'projectName' => 'required',
-            'poNumber' => 'required',
+ public function shippingsAddTravelDocument(Request $request) {
+    // Buat atribut custom supaya errornya friendly dan jelas
+    $attributes = [];
 
-            'itemCode.*' => 'required',
-            'itemName.*' => 'required',
-            'quantitySend.*' => 'required',
-            'totalSend.*' => 'required',
-            'qtyPreOrder.*' => 'required',
-            'unitType.*' => 'required',
-            'description.*' => 'required',
-            'information.*' => 'required',
-        ]);
-        
-        $travelDocument = TravelDocument::create([
-            'no_travel_document' => $validated['numberSJN'],
-            'date_no_travel_document' => now(),
-            'send_to' => $validated['sendTo'],
-            'reference_number' => $validated['numberRef'],
-            'po_number' => $validated['poNumber'],
-            'project' => $validated['projectName'],
-            'status' => 'belum terkirim',
-        ]);
-
-        $items = [];
-        foreach ($validated['itemCode'] as $key => $itemCode) {
-            $items[] = [
-                'travel_document_id' => $travelDocument->id,
-                'item_code' => $itemCode,
-                'item_name' => $validated['itemName'][$key],
-                'qty_send' => $validated['quantitySend'][$key],
-                'total_send' => $validated['totalSend'][$key],
-                'qty_po' => $validated['qtyPreOrder'][$key],
-                'unit' => $validated['unitType'][$key],
-                'description' => $validated['description'][$key],
-                'information' => $validated['information'][$key],
-            ];
-        }
-
-        $travelDocument->items()->createMany($items);
-
-        return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
+    // Mapping nama atribut array supaya muncul "Kode barang baris 1", "Nama barang baris 2", dll
+    foreach ($request->input('itemCode', []) as $key => $value) {
+        $attributes["itemCode.$key"] = 'Kode barang baris ' . ($key + 1);
     }
+    foreach ($request->input('itemName', []) as $key => $value) {
+        $attributes["itemName.$key"] = 'Nama barang baris ' . ($key + 1);
+    }
+    foreach ($request->input('quantitySend', []) as $key => $value) {
+        $attributes["quantitySend.$key"] = 'Jumlah kirim baris ' . ($key + 1);
+    }
+    foreach ($request->input('totalSend', []) as $key => $value) {
+        $attributes["totalSend.$key"] = 'Total kirim baris ' . ($key + 1);
+    }
+    foreach ($request->input('qtyPreOrder', []) as $key => $value) {
+        $attributes["qtyPreOrder.$key"] = 'Qty PO baris ' . ($key + 1);
+    }
+    foreach ($request->input('unitType', []) as $key => $value) {
+        $attributes["unitType.$key"] = 'Satuan baris ' . ($key + 1);
+    }
+    foreach ($request->input('description', []) as $key => $value) {
+        $attributes["description.$key"] = 'Deskripsi baris ' . ($key + 1);
+    }
+    foreach ($request->input('information', []) as $key => $value) {
+        $attributes["information.$key"] = 'Informasi baris ' . ($key + 1);
+    }
+
+    // Custom pesan error (boleh kamu tambah kalau mau)
+    $messages = [
+        'sendTo.required' => 'Tujuan pengiriman harus diisi.',
+        'numberSJN.required' => 'Nomor SJN harus diisi.',
+        'numberRef.required' => 'Nomor referensi harus diisi.',
+        'projectName.required' => 'Nama proyek harus diisi.',
+        'poNumber.required' => 'Nomor PO harus diisi.',
+
+        'itemCode.*.required' => ':attribute harus diisi.',
+        'itemName.*.required' => ':attribute harus diisi.',
+        'quantitySend.*.required' => ':attribute harus diisi.',
+        'totalSend.*.required' => ':attribute harus diisi.',
+        'qtyPreOrder.*.required' => ':attribute harus diisi.',
+        'unitType.*.required' => ':attribute harus diisi.',
+        'description.*.required' => ':attribute harus diisi.',
+        'information.*.required' => ':attribute harus diisi.',
+    ];
+
+    // Validasi dengan pesan & atribut custom
+    $validated = $request->validate([
+        'sendTo' => 'required',
+        'numberSJN' => 'required',
+        'numberRef' => 'required',
+        'projectName' => 'required',
+        'poNumber' => 'required',
+
+        'itemCode.*' => 'required',
+        'itemName.*' => 'required',
+        'quantitySend.*' => 'required',
+        'totalSend.*' => 'required',
+        'qtyPreOrder.*' => 'required',
+        'unitType.*' => 'required',
+        'description.*' => 'required',
+        'information.*' => 'required',
+    ], $messages, $attributes);
+
+    // Simpan TravelDocument
+    $travelDocument = TravelDocument::create([
+        'no_travel_document' => $validated['numberSJN'],
+        'date_no_travel_document' => now(),
+        'send_to' => $validated['sendTo'],
+        'reference_number' => $validated['numberRef'],
+        'po_number' => $validated['poNumber'],
+        'project' => $validated['projectName'],
+        'status' => 'belum terkirim',
+    ]);
+
+    // Persiapkan data items
+    $items = [];
+    foreach ($validated['itemCode'] as $key => $itemCode) {
+        $items[] = [
+            'travel_document_id' => $travelDocument->id,
+            'item_code' => $itemCode,
+            'item_name' => $validated['itemName'][$key],
+            'qty_send' => $validated['quantitySend'][$key],
+            'total_send' => $validated['totalSend'][$key],
+            'qty_po' => $validated['qtyPreOrder'][$key],
+            'unit' => $validated['unitType'][$key],
+            'description' => $validated['description'][$key],
+            'information' => $validated['information'][$key],
+        ];
+    }
+
+    // Simpan items ke DB
+    $travelDocument->items()->createMany($items);
+
+    return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
+}
+
 
     // Print SJN
     public function printShippings($id){
@@ -186,7 +238,7 @@ class AdminWebController extends Controller
     }
 
 
-    public function search(Request $request)
+  public function search(Request $request)
     {
         $noTravelDocument = $request->query('no_travel_document');
 
@@ -194,28 +246,41 @@ class AdminWebController extends Controller
             ->with(['trackingSystems.track.locations'])
             ->first();
 
-        if ($travelDocument) {
-            $locations = [];
-            foreach ($travelDocument->trackingSystems as $trackingSystem) {
-                foreach ($trackingSystem->track->locations as $location) {
-                    $locations[] = [
-                        'latitude' => $location->latitude,
-                        'longitude' => $location->longitude,
-                    ];
-                }
+        if (!$travelDocument) {
+            return redirect()->back()->with('error', 'Travel Document tidak ditemukan');
+        }
+
+        $locations = [];
+
+        foreach ($travelDocument->trackingSystems as $trackingSystem) {
+            foreach ($trackingSystem->track->locations as $location) {
+                $locations[] = [
+                    'latitude' => $location->latitude,
+                    'longitude' => $location->longitude,
+                ];
             }
+        }
 
-            return response()->json([
-                'success' => true,
-                'locations' => $locations,
-            ]);
-        } 
+        if (empty($locations)) {
+            return redirect()->back()->with('error', 'Lokasi tidak ditemukan');
+        }
 
+        // Jika berhasil dan ada lokasi
         return response()->json([
-            'success' => false,
-            'message' => 'Travel Document tidak ditemukan',
+            'success' => true,
+            'locations' => $locations,
         ]);
     }
+
+
+    public function track(Request $request)
+{
+    if ($request->has(['status', 'message'])) {
+        session()->flash($request->status, $request->message);
+    }
+
+    return view('General.tracker'); 
+}
 
 
 

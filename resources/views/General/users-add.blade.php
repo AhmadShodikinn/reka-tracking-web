@@ -44,14 +44,6 @@
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          @if ($errors->any())
-              <pre style="color: red;">{{ print_r($errors->all(), true) }}</pre>
-          @endif
-
-        <!-- ===== alert Start ===== -->
-        @include('partials.alert.alert')
-        <!-- ===== alert end ===== -->
-
 
           <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
           <div x-data="{ 
