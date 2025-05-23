@@ -42,9 +42,6 @@
          @include('Template.header')
          <!-- ===== Header End ===== -->
 
-        
-         @include('partials.alert.alert')
- 
          <!-- ===== Main Content Start ===== -->
          <main>
           

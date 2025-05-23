@@ -128,7 +128,7 @@ class AdminWebController extends Controller
             'description.*' => 'required',
             'information.*' => 'required',
         ]);
-
+        
         $travelDocument = TravelDocument::create([
             'no_travel_document' => $validated['numberSJN'],
             'date_no_travel_document' => now(),
@@ -162,38 +162,24 @@ class AdminWebController extends Controller
     // Print SJN
     public function printShippings($id){
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
-        // $qrCode = QrCode::format('svg')->size(200)->generate($id);
 
         $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($id));
-
-        // dd($qrCode);
-
         $pdf = PDF::loadView('General.shippings-print', compact('travelDocument', 'qrCode'));
-        // $pdf->setOptions([
-        //     'isHtml5ParserEnabled' => true,
-        //     'isRemoteEnabled' => true,
-        // ]);
-    
-        // $pdf->setPaper('A4', 'portrait');
-    
+
         return $pdf->stream();
 
-        // return $pdf->download('shipping_'.$id.'.pdf');
         return view('General.shippings-print', compact('travelDocument', 'qrCode'));
     }
 
     public function showTracker($track_id)
     {
-        // Ambil data TrackingSystem berdasarkan track_id
-        $trackingSystem = TrackingSystem::with('track') // Mengambil relasi Track
+        $trackingSystem = TrackingSystem::with('track') 
             ->where('track_id', $track_id)
             ->firstOrFail();
 
-        // Ambil data lokasi dari TrackingSystem yang terkait dengan track_id
         $locations = TrackingSystem::where('track_id', $track_id)
-            ->get(['latitude', 'longitude']); // Ambil hanya kolom latitude dan longitude
+            ->get(['latitude', 'longitude']);
 
-        // Ambil koordinat awal peta berdasarkan lokasi pertama
         $initialLocation = $locations->isNotEmpty() ? [$locations[0]->latitude, $locations[0]->longitude] : [0, 0];
 
         return view('General.tracker', compact('trackingSystem', 'locations', 'initialLocation'));
@@ -202,16 +188,13 @@ class AdminWebController extends Controller
 
     public function search(Request $request)
     {
-        // dd($request->all());
         $noTravelDocument = $request->query('no_travel_document');
 
-        // Mencari TravelDocument berdasarkan nomor surat jalan
         $travelDocument = TravelDocument::where('no_travel_document', $noTravelDocument)
             ->with(['trackingSystems.track.locations'])
             ->first();
 
         if ($travelDocument) {
-            // Ambil lokasi dari tracking system
             $locations = [];
             foreach ($travelDocument->trackingSystems as $trackingSystem) {
                 foreach ($trackingSystem->track->locations as $location) {
@@ -226,7 +209,7 @@ class AdminWebController extends Controller
                 'success' => true,
                 'locations' => $locations,
             ]);
-        }
+        } 
 
         return response()->json([
             'success' => false,

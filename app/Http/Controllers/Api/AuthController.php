@@ -22,6 +22,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
 
+        //noted
         $user->tokens->each(function ($token) {
             $token->delete();
         });

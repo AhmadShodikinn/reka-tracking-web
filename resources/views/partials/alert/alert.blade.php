@@ -39,3 +39,33 @@
     </div>
   </div>
 @endif
+
+@if ($errors->any())
+  <div
+    x-data="{ show: true, type: 'error', message: @js($errors->first()) }"
+    x-show="show"
+    x-init="setTimeout(() => show = false, 5000)"
+    :class="{
+      'border-error-500 bg-error-50 dark:border-error-500/30 dark:bg-error-500/15': type === 'error'
+    }"
+    class="rounded-xl border p-4 mt-4 transition duration-500"
+    x-transition:enter="transition ease-out duration-500 transform"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-300 transform"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+  >
+    <div class="flex items-start gap-3">
+      <div :class="{
+          'text-error-500': type === 'error'
+        }" class="-mt-0.5">
+      </div>
+
+      <div>
+        <h4 class="mb-1 text-sm font-semibold text-gray-800 dark:text-white/90" x-text="type.charAt(0).toUpperCase() + type.slice(1) + ' Message'"></h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400" x-text="message"></p>
+      </div>
+    </div>
+  </div>
+@endif

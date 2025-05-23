@@ -6,14 +6,23 @@ use App\Http\Controllers\ProfileWebController;
 use App\Http\Controllers\SuperAdminWebController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/test', function () {
-    return view('index');
-});
+    if (Auth::check()) {
+        $user = Auth::user();
 
+        if ($user->role === 'superadmin') {
+            return redirect('/profile');
+        } elseif ($user->role === 'admin') {
+            return redirect('/shippings');
+        } else {
+            return redirect('/dashboard'); 
+        }
+    } else {
+        return redirect('/login');
+    }
+});
 //Auth Web 
 Route::get('/login', function () {
     return view('Auth.login');
@@ -22,15 +31,6 @@ Route::post('/login', [AuthWebController::class, 'login'])->name('login');
 Route::get('/logout', [AuthWebController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    //General Route
-    Route::get('/dashboard', function () {
-        return view('General.dashboard');
-    })->name('dashboard');
-
-    Route::get('/dashboard', function () {
-        return view('General.dashboard');
-    })->name('dashboard');
-
     Route::get('/profile', function () {
         return view('General.profile');
     })->name('profile');
