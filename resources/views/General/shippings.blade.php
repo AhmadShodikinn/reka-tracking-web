@@ -60,7 +60,7 @@
               <div x-data="searchDocumentComponent()" class="relative w-64 flex-shrink-0">
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Cari..."
                   id="search"
                   name="search"
                   x-model="query"
