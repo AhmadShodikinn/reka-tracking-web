@@ -17,26 +17,38 @@ class AdminWebController extends Controller
         return view('General.shippings', compact('listTravelDocument')); //set view
     }
 
+
+    public function searchDocument(Request $request){
+    $query = $request->query('search');
+
+    $results = TravelDocument::where('no_travel_document', 'like', "%$query%")
+        ->orWhere('send_to', 'like', "%$query%")
+        ->orWhere('status', 'like', "%$query%")
+        ->orWhere('project', 'like', "%$query%")
+        ->orderBy('id', 'desc')
+        ->get(); 
+
+        return response()->json(['results' => $results]);
+    }
+
+
     public function shippingsDetail($id) {
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
 
-        return view('General.shippings-detail', compact('travelDocument')); //set view
+        return view('General.shippings-detail', compact('travelDocument'));
     }
 
     public function shippingsAdd() {
-        return view('General.shippings-add'); //set view
+        return view('General.shippings-add'); 
     }
 
     public function shippingsEdit($id) {
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
 
-        return view('General.shippings-edit', compact('travelDocument')); //set view
+        return view('General.shippings-edit', compact('travelDocument'));
     }
 
     public function shippingsUpdate(Request $request, $id){
-
-        // dd($request->all());
-
         $validated = $request->validate([
             'sendTo' => 'required',
             'numberSJN' => 'required',
@@ -54,8 +66,6 @@ class AdminWebController extends Controller
             'information.*' => 'nullable',
         ]);
 
-        // dd($validated);
-
         $travelDocument = TravelDocument::findOrFail($id);
 
         $travelDocument->update([
@@ -67,10 +77,8 @@ class AdminWebController extends Controller
             'status' => 'belum terkirim',
         ]);
 
-        // Hapus semua item lama
         $travelDocument->items()->delete();
 
-        // Tambah ulang item dari form
         $items = [];
         foreach ($validated['itemCode'] as $key => $itemCode) {
             $items[] = [
@@ -103,112 +111,103 @@ class AdminWebController extends Controller
     }
 
 
-    // Detail SJN and list item by SJN ID
     public function showDetail($id) {
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
 
         return view('detail', compact('travelDocument')); //set view
     }
 
-    // Create SJN
- public function shippingsAddTravelDocument(Request $request) {
-    // Buat atribut custom supaya errornya friendly dan jelas
-    $attributes = [];
+    public function shippingsAddTravelDocument(Request $request) {
+        $attributes = [];
 
-    // Mapping nama atribut array supaya muncul "Kode barang baris 1", "Nama barang baris 2", dll
-    foreach ($request->input('itemCode', []) as $key => $value) {
-        $attributes["itemCode.$key"] = 'Kode barang baris ' . ($key + 1);
-    }
-    foreach ($request->input('itemName', []) as $key => $value) {
-        $attributes["itemName.$key"] = 'Nama barang baris ' . ($key + 1);
-    }
-    foreach ($request->input('quantitySend', []) as $key => $value) {
-        $attributes["quantitySend.$key"] = 'Jumlah kirim baris ' . ($key + 1);
-    }
-    foreach ($request->input('totalSend', []) as $key => $value) {
-        $attributes["totalSend.$key"] = 'Total kirim baris ' . ($key + 1);
-    }
-    foreach ($request->input('qtyPreOrder', []) as $key => $value) {
-        $attributes["qtyPreOrder.$key"] = 'Qty PO baris ' . ($key + 1);
-    }
-    foreach ($request->input('unitType', []) as $key => $value) {
-        $attributes["unitType.$key"] = 'Satuan baris ' . ($key + 1);
-    }
-    foreach ($request->input('description', []) as $key => $value) {
-        $attributes["description.$key"] = 'Deskripsi baris ' . ($key + 1);
-    }
-    foreach ($request->input('information', []) as $key => $value) {
-        $attributes["information.$key"] = 'Informasi baris ' . ($key + 1);
-    }
+        foreach ($request->input('itemCode', []) as $key => $value) {
+            $attributes["itemCode.$key"] = 'Kode barang baris ' . ($key + 1);
+        }
+        foreach ($request->input('itemName', []) as $key => $value) {
+            $attributes["itemName.$key"] = 'Nama barang baris ' . ($key + 1);
+        }
+        foreach ($request->input('quantitySend', []) as $key => $value) {
+            $attributes["quantitySend.$key"] = 'Jumlah kirim baris ' . ($key + 1);
+        }
+        foreach ($request->input('totalSend', []) as $key => $value) {
+            $attributes["totalSend.$key"] = 'Total kirim baris ' . ($key + 1);
+        }
+        foreach ($request->input('qtyPreOrder', []) as $key => $value) {
+            $attributes["qtyPreOrder.$key"] = 'Qty PO baris ' . ($key + 1);
+        }
+        foreach ($request->input('unitType', []) as $key => $value) {
+            $attributes["unitType.$key"] = 'Satuan baris ' . ($key + 1);
+        }
+        foreach ($request->input('description', []) as $key => $value) {
+            $attributes["description.$key"] = 'Deskripsi baris ' . ($key + 1);
+        }
+        foreach ($request->input('information', []) as $key => $value) {
+            $attributes["information.$key"] = 'Informasi baris ' . ($key + 1);
+        }
 
-    // Custom pesan error (boleh kamu tambah kalau mau)
-    $messages = [
-        'sendTo.required' => 'Tujuan pengiriman harus diisi.',
-        'numberSJN.required' => 'Nomor SJN harus diisi.',
-        'numberRef.required' => 'Nomor referensi harus diisi.',
-        'projectName.required' => 'Nama proyek harus diisi.',
-        'poNumber.required' => 'Nomor PO harus diisi.',
+        $messages = [
+            'sendTo.required' => 'Tujuan pengiriman harus diisi.',
+            'numberSJN.required' => 'Nomor SJN harus diisi.',
+            'numberRef.required' => 'Nomor referensi harus diisi.',
+            'projectName.required' => 'Nama proyek harus diisi.',
+            'poNumber.required' => 'Nomor PO harus diisi.',
 
-        'itemCode.*.required' => ':attribute harus diisi.',
-        'itemName.*.required' => ':attribute harus diisi.',
-        'quantitySend.*.required' => ':attribute harus diisi.',
-        'totalSend.*.required' => ':attribute harus diisi.',
-        'qtyPreOrder.*.required' => ':attribute harus diisi.',
-        'unitType.*.required' => ':attribute harus diisi.',
-        'description.*.required' => ':attribute harus diisi.',
-        'information.*.required' => ':attribute harus diisi.',
-    ];
-
-    // Validasi dengan pesan & atribut custom
-    $validated = $request->validate([
-        'sendTo' => 'required',
-        'numberSJN' => 'required',
-        'numberRef' => 'required',
-        'projectName' => 'required',
-        'poNumber' => 'required',
-
-        'itemCode.*' => 'required',
-        'itemName.*' => 'required',
-        'quantitySend.*' => 'required',
-        'totalSend.*' => 'required',
-        'qtyPreOrder.*' => 'required',
-        'unitType.*' => 'required',
-        'description.*' => 'required',
-        'information.*' => 'required',
-    ], $messages, $attributes);
-
-    // Simpan TravelDocument
-    $travelDocument = TravelDocument::create([
-        'no_travel_document' => $validated['numberSJN'],
-        'date_no_travel_document' => now(),
-        'send_to' => $validated['sendTo'],
-        'reference_number' => $validated['numberRef'],
-        'po_number' => $validated['poNumber'],
-        'project' => $validated['projectName'],
-        'status' => 'belum terkirim',
-    ]);
-
-    // Persiapkan data items
-    $items = [];
-    foreach ($validated['itemCode'] as $key => $itemCode) {
-        $items[] = [
-            'travel_document_id' => $travelDocument->id,
-            'item_code' => $itemCode,
-            'item_name' => $validated['itemName'][$key],
-            'qty_send' => $validated['quantitySend'][$key],
-            'total_send' => $validated['totalSend'][$key],
-            'qty_po' => $validated['qtyPreOrder'][$key],
-            'unit' => $validated['unitType'][$key],
-            'description' => $validated['description'][$key],
-            'information' => $validated['information'][$key],
+            'itemCode.*.required' => ':attribute harus diisi.',
+            'itemName.*.required' => ':attribute harus diisi.',
+            'quantitySend.*.required' => ':attribute harus diisi.',
+            'totalSend.*.required' => ':attribute harus diisi.',
+            'qtyPreOrder.*.required' => ':attribute harus diisi.',
+            'unitType.*.required' => ':attribute harus diisi.',
+            'description.*.required' => ':attribute harus diisi.',
+            'information.*.required' => ':attribute harus diisi.',
         ];
+
+        $validated = $request->validate([
+            'sendTo' => 'required',
+            'numberSJN' => 'required',
+            'numberRef' => 'required',
+            'projectName' => 'required',
+            'poNumber' => 'required',
+
+            'itemCode.*' => 'required',
+            'itemName.*' => 'required',
+            'quantitySend.*' => 'required',
+            'totalSend.*' => 'required',
+            'qtyPreOrder.*' => 'required',
+            'unitType.*' => 'required',
+            'description.*' => 'required',
+            'information.*' => 'required',
+        ], $messages, $attributes);
+
+        $travelDocument = TravelDocument::create([
+            'no_travel_document' => $validated['numberSJN'],
+            'date_no_travel_document' => now(),
+            'send_to' => $validated['sendTo'],
+            'reference_number' => $validated['numberRef'],
+            'po_number' => $validated['poNumber'],
+            'project' => $validated['projectName'],
+            'status' => 'belum terkirim',
+        ]);
+
+        $items = [];
+        foreach ($validated['itemCode'] as $key => $itemCode) {
+            $items[] = [
+                'travel_document_id' => $travelDocument->id,
+                'item_code' => $itemCode,
+                'item_name' => $validated['itemName'][$key],
+                'qty_send' => $validated['quantitySend'][$key],
+                'total_send' => $validated['totalSend'][$key],
+                'qty_po' => $validated['qtyPreOrder'][$key],
+                'unit' => $validated['unitType'][$key],
+                'description' => $validated['description'][$key],
+                'information' => $validated['information'][$key],
+            ];
+        }
+
+        $travelDocument->items()->createMany($items);
+
+        return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
     }
-
-    // Simpan items ke DB
-    $travelDocument->items()->createMany($items);
-
-    return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
-}
 
 
     // Print SJN
@@ -273,14 +272,13 @@ class AdminWebController extends Controller
     }
 
 
-    public function track(Request $request)
-{
-    if ($request->has(['status', 'message'])) {
-        session()->flash($request->status, $request->message);
-    }
+    public function track(Request $request){
+        if ($request->has(['status', 'message'])) {
+            session()->flash($request->status, $request->message);
+        }
 
-    return view('General.tracker'); 
-}
+        return view('General.tracker'); 
+    }
 
 
 

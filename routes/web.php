@@ -7,6 +7,9 @@ use App\Http\Controllers\SuperAdminWebController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Models\TravelDocument;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -30,6 +33,7 @@ Route::get('/login', function () {
 Route::post('/login', [AuthWebController::class, 'login'])->name('login');
 Route::get('/logout', [AuthWebController::class, 'logout'])->name('logout');
 
+//Admin Rout
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', function () {
         return view('General.profile');
@@ -37,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::put('/profile/update', [ProfileWebController::class, 'update'])->name('profile.update');
 
-    //Admin Route
+    Route::get('/shippings-search', [AdminWebController::class, 'searchDocument']);
     Route::get('/shippings', [AdminWebController::class, 'shippingsIndex'])->name('shippings.index');
     Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsDetail'])->name('shippings.detail');
     Route::get('/add-shippings', [AdminWebController::class, 'shippingsAdd'])->name('shippings.add');
@@ -46,10 +50,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/shippings/{id}/edit', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit');
     Route::put('/shippings/{id}', [AdminWebController::class, 'shippingsUpdate'])->name('shippings.update');
-
-    //jaga-jaga
-    // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsEdit'])->name('shippings.edit')->middleware('auth');
-    // Route::get('/shippings/{id}', [AdminWebController::class, 'shippingsUpdate'])->name('shippings.update')->middleware('auth');
 
     Route::get('/print-shippings/{id}', [AdminWebController::class, 'printShippings'])->name('shippings.print');
 
@@ -62,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(function () {
+    Route::get('/user-search', [SuperAdminWebController::class, 'searchUser']);
     Route::get('/users', [SuperAdminWebController::class, 'index'])->name('users.index');
     Route::get('/users/{id}', [SuperAdminWebController::class, 'edit'])->name('users.edit');
     Route::get('/add-user', [SuperAdminWebController::class, 'add'])->name('users.add');

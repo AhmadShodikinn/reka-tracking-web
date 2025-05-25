@@ -7,6 +7,7 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>
       Manajemen Pengguna | Rekatrack
     </title>
@@ -53,28 +54,24 @@
         <!-- Search Form -->
         <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <a href="{{ route('users.add')}}" class="rounded-md bg-blue-500 text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Tambah Pengguna</a>
-          <div class="relative">
+          <div x-data="userSearchComponent()" class="relative w-64">
             <input
               type="text"
               placeholder="Search..."
-              id="search"
-              name="search"
-              class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+              x-model="query"
+              @keydown.enter.prevent="search()"
+              class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
             />
-            <svg
+            <button
+              @click="search()"
               class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke-width="1.5" 
-              stroke="currentColor"
+              aria-label="Search"
+              type="button"
             >
-              <path
-                stroke-linecap="round" 
-                stroke-linejoin="round"  
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
-            </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197M15.803 15.803A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+              </svg>
+            </button>
           </div>
         </div>
         <!-- End Search Form -->
@@ -121,7 +118,7 @@
                   </th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody id="user-table-body" class="divide-y divide-gray-100 dark:divide-gray-800">
               @foreach($users as $index => $user)
                   <tr>
                       <td class="px-5 py-4 sm:px-6">

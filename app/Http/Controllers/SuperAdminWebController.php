@@ -10,11 +10,21 @@ use Illuminate\Support\Facades\Validator;
 
 class SuperAdminWebController extends Controller
 {
-    //super admin handling management user
-    //showing page
     public function index() {
         $users = User::paginate(10);
         return view('General.users', compact('users')); 
+    }
+
+    public function searchUser(Request $request){
+        $query = $request->input('search');
+
+        $results = User::with('role')
+            ->where('name', 'like', "%$query%")
+            ->orWhere('email', 'like', "%$query%")
+            ->orWhere('nip', 'like', "%$query%")
+            ->get();
+
+        return response()->json(['results' => $results]);
     }
 
     public function add() {
@@ -25,11 +35,9 @@ class SuperAdminWebController extends Controller
     public function edit($id) {
         $user = User::findOrFail($id);
         $roles = Role::where('name', '!=', 'Super Admin')->get();
-        // dd($user);
         return view('General.users-edit', compact('user', 'roles'));
     }
 
-    //function
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string',
@@ -43,7 +51,7 @@ class SuperAdminWebController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $user = User::create([
+        User::create([
             'name' => $request->fullname,
             'email' => $request->email,
             'password' => Hash::make("password"),

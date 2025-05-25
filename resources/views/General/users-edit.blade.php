@@ -155,7 +155,7 @@
                            type="submit"
                            class="rounded-md bg-blue-500 text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                          >
-                           Tambah Pengguna
+                           Edit Pengguna
                          </button>
                        </div>
                     </form>
