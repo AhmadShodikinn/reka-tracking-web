@@ -5,13 +5,41 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Location;
 use App\Models\Track;
+use App\Models\User;
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 class DriverController extends Controller
 {
+    public function forgotPassword(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        // Cari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email tidak ditemukan.',
+            ], 404);
+        }
+
+        // Update password
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'Password berhasil diubah.',
+        ]);
+    }
+
+
     public function showTravelDocuments(){
         $suratJalanList = TravelDocument::with('items')->get();
 
@@ -97,7 +125,7 @@ class DriverController extends Controller
             ]);
 
             TravelDocument::where('id', $documentId)->update([
-                'status' => 'sedang_dikirim',
+                'status' => 'Sedang dikirim',
             ]);
 
 
@@ -215,7 +243,7 @@ class DriverController extends Controller
             $tracking->update(['status' => 'non-active']);
 
             $travelDocument = TravelDocument::find($travelDocumentId);
-            $travelDocument->update(['status' => 'terkirim']);
+            $travelDocument->update(['status' => 'Terkirim']);
 
             $responses[] = [
                 'travel_document_id' => $travelDocumentId,

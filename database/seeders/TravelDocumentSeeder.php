@@ -111,7 +111,7 @@ class TravelDocumentSeeder extends Seeder
             'po_number' => '4500000011228',
             'reference_number' => '0009/009/REKA/GEN/PPC/I/2025',
             'project' => '617',
-            'status' => 'terkirim',
+            'status' => 'belum terkirim',
         ]);
 
    

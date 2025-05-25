@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('po_number');
             $table->string('reference_number');
             $table->string('project');
-            $table->enum('status', ['terkirim', 'belum terkirim']);
+            $table->enum('status', ['Terkirim','Sedang dikirim', 'Belum terkirim']);
             $table->timestamps();
             $table->softDeletes();
         });
