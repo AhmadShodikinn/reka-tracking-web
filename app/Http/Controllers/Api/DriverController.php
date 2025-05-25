@@ -63,13 +63,12 @@ class DriverController extends Controller
     }
 
     // pada db masing menggunakan track id untuk bagian ini
-    public function sendLocation(Request $request)
-    {
+    public function sendLocation(Request $request){
         $request->validate([
             'travel_document_id' => 'required|array',
             'travel_document_id.*' => 'exists:travel_document,id',
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         $user = Auth::user();
@@ -78,20 +77,32 @@ class DriverController extends Controller
         $responses = [];
 
         foreach ($request->travel_document_id as $documentId) {
+            $travelDocument = TravelDocument::find($documentId);
+
+            // Cek status surat jalan, jika sudah terkirim skip
+            if ($travelDocument->status === 'Terkirim') {
+                $responses[] = [
+                    'travel_document_id' => $documentId,
+                    'message' => 'Surat jalan sudah terkirim, pengiriman lokasi tidak dapat dilakukan.',
+                    'status' => 'error',
+                ];
+                continue; // skip proses berikutnya untuk dokumen ini
+            }
+
+            // Cari track aktif driver terkait dokumen
             $track = Track::where('driver_id', $driverId)
                 ->whereHas('trackingSystems', function ($query) use ($documentId) {
                     $query->where('travel_document_id', $documentId);
                 })->latest()->first();
 
-            // Jika track tidak ada, buat baru dan set status menjadi aktif
             if (!$track) {
+                // Buat track baru dan tracking system aktif
                 $track = Track::create([
                     'driver_id' => $driverId,
                     'time_stamp' => now(),
                     'status' => 'active',
                 ]);
 
-                // Buat Tracking System baru
                 TrackingSystem::create([
                     'track_id' => $track->id,
                     'travel_document_id' => $documentId,
@@ -99,7 +110,7 @@ class DriverController extends Controller
                     'status' => 'active',
                 ]);
             } else {
-                // Update status jika sudah ada
+                // Update atau buat tracking system jadi aktif
                 TrackingSystem::updateOrCreate(
                     [
                         'track_id' => $track->id,
@@ -111,12 +122,13 @@ class DriverController extends Controller
                     ]
                 );
 
+                // Update status track jika belum aktif
                 if ($track->status !== 'active') {
                     $track->update(['status' => 'active']);
                 }
             }
 
-            // Simpan lokasi
+            // Simpan lokasi terbaru
             Location::create([
                 'track_id' => $track->id,
                 'latitude' => $request->latitude,
@@ -124,24 +136,27 @@ class DriverController extends Controller
                 'time_stamp' => now(),
             ]);
 
-            TravelDocument::where('id', $documentId)->update([
+            // Update status travel document jadi Sedang dikirim
+            $travelDocument->update([
                 'status' => 'Sedang dikirim',
             ]);
 
-
             $responses[] = [
+                'travel_document_id' => $documentId,
                 'track_id' => $track->id,
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'status' => 'active',
+                'message' => 'Lokasi berhasil dikirim.',
             ];
         }
 
         return response()->json([
-            'message' => 'Lokasi berhasil dikirim kepada sistem untuk semua dokumen!',
+            'message' => 'Proses pengiriman lokasi selesai.',
             'data' => $responses,
         ], 201);
     }
+
 
 
     // Update status tracking system untuk banyak dokumen
