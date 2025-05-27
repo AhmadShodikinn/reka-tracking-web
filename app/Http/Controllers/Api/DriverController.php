@@ -221,7 +221,7 @@ class DriverController extends Controller
             $responses[] = [
                 'travel_document_id' => $documentId,
                 'message' => 'Status berhasil diubah menjadi non-active dan lokasi disimpan.',
-                'status' => 'success',
+                'status' => 'non-active',
             ];
             
         }

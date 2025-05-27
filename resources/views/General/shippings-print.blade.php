@@ -83,7 +83,7 @@
         <div style="position: relative; display: inline-block; text-align: center; width: 80px; font-size: 0.75rem; font-weight: bold; background-color: #fff; border: 1px solid #000; padding: 5px 10px;">
             {{ $label }}
         </div>
-//bug print pages
+        
         <!-- Header -->
         <table style="width: 100%; margin-bottom: 1rem;">
             <tr>
