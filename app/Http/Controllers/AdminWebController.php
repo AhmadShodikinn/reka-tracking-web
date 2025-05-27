@@ -214,7 +214,8 @@ class AdminWebController extends Controller
     public function printShippings($id){
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
 
-        $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($id));
+        $qrString = "SJNID:" . $id;
+        $qrCode = base64_encode(QrCode::format('svg')->size(200)->errorCorrection('H')->generate($qrString));
         $pdf = PDF::loadView('General.shippings-print', compact('travelDocument', 'qrCode'));
 
         return $pdf->stream();
