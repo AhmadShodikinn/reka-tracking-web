@@ -59,7 +59,7 @@ class SuperAdminWebController extends Controller
             'phone_number' => $request->telephone,
             'role_id' => $request->role,
         ]);
-        return redirect()->route('General.users')->with('success', 'Pengguna berhasil ditambahkan.');
+        return redirect()->route('users.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function update(Request $request, $id) {
@@ -84,7 +84,7 @@ class SuperAdminWebController extends Controller
         $user->role_id = $request->role;
         $user->save();
 
-        return redirect()->route('General.users')->with('success', 'Pengguna berhasil diperbarui.');
+        return redirect()->route('users.index')->with('success', 'Pengguna berhasil diperbarui.');
     }
 
     public function delete($id)

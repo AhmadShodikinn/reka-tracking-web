@@ -27,7 +27,6 @@ class AuthWebController extends Controller
                 return redirect()->route('shippings.index');
             }
 
-            // Role tidak dikenal
             Auth::logout();
             return redirect()->route('login')->with('error', 'Role tidak dikenali.');
         }
