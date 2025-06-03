@@ -37,7 +37,7 @@
     class="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar"
   >
     <!-- Sidebar Menu -->
-    <nav x-data="{selected: $persist('Dashboard')}">
+    <nav x-data="{ selected: 'Dashboard' }">
       <!-- Menu Group -->
       <div>
         <h3 class="mb-4 text-xs uppercase leading-[20px] text-gray-400">
@@ -71,12 +71,10 @@
           <li>
             <a
               href="{{ route('users.index') }}"
-              @click="selected = (selected === 'Users' ? '':'Users')"
-              class="menu-item group"
-              :class=" (selected === 'Users') ? 'menu-item-active' : 'menu-item-inactive'"
+              class="menu-item group {{ request()->routeIs('users.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
             >
             <svg
-                :class="(selected === 'Users')  ?  'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                class="{{ request()->routeIs('users.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -104,13 +102,11 @@
           <li>
             <a
               href="{{ route('shippings.index') }}"
-              @click="selected = (selected === 'Shippings' ? '':'Shippings')"
-              class="menu-item group"
-              :class=" (selected === 'Shippings') ? 'menu-item-active' : 'menu-item-inactive'"
+              class="menu-item group {{ request()->routeIs('shippings.*') ? 'menu-item-active' : 'menu-item-inactive' }}"
             >
          
               <svg
-                :class="(selected === 'Shippings') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                class="{{ request()->routeIs('shippings.*') ? 'menu-item-icon-active' : 'menu-item-icon-inactive' }}"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -169,12 +165,10 @@
           <li>
             <a
               href="{{ route('tracking') }}"
-              @click="selected = (selected === 'Tracker' ? '':'Tracker')"
-              class="menu-item group"
-              :class="(selected === 'Tracker') ? 'menu-item-active' : 'menu-item-inactive'"
+              class="menu-item group {{ request()->routeIs('tracking') ? 'menu-item-active' : 'menu-item-inactive' }}" 
             >
               <svg
-                :class="(selected === 'Tracker') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
+                class="{{ request()->routeIs('tracking') ? 'menu-item-icon-active'  :'menu-item-icon-inactive' }}"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"

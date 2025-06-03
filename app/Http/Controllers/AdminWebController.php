@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
+use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -14,7 +15,7 @@ class AdminWebController extends Controller
     public function shippingsIndex() {
         $listTravelDocument = TravelDocument::paginate(10);
 
-        return view('General.shippings', compact('listTravelDocument')); //set view
+        return view('General.shippings', compact('listTravelDocument')); 
     }
 
 
@@ -114,7 +115,7 @@ class AdminWebController extends Controller
     public function showDetail($id) {
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
 
-        return view('detail', compact('travelDocument')); //set view
+        return view('detail', compact('travelDocument')); 
     }
 
     public function shippingsAddTravelDocument(Request $request) {
@@ -162,7 +163,7 @@ class AdminWebController extends Controller
             'information.*.required' => ':attribute harus diisi.',
         ];
 
-        $validated = $request->validate([
+        $rules = [
             'sendTo' => 'required',
             'numberSJN' => 'required',
             'numberRef' => 'required',
@@ -177,7 +178,15 @@ class AdminWebController extends Controller
             'unitType.*' => 'required',
             'description.*' => 'required',
             'information.*' => 'required',
-        ], $messages, $attributes);
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages, $attributes);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator);
+        }
+
+        $validated = $validator->validated();
 
         $travelDocument = TravelDocument::create([
             'no_travel_document' => $validated['numberSJN'],
@@ -208,6 +217,7 @@ class AdminWebController extends Controller
 
         return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
     }
+
 
 
     // Print SJN

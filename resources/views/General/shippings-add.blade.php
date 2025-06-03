@@ -73,6 +73,7 @@
                             type="text"
                             id="sendTo"
                             name="sendTo"
+                            value="{{ old('sendTo') }}"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                           />
                         </div>
@@ -84,6 +85,7 @@
                             type="text"
                             id="numberSJN"
                             name="numberSJN"
+                            value="{{ old('numberSJN') }}"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                           />
                         </div>
@@ -95,6 +97,7 @@
                             type="text"
                             id="numberRef"
                             name="numberRef"
+                            value="{{ old('numberRef') }}"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                           />
                         </div>
@@ -106,6 +109,7 @@
                             type="text"
                             id="projectName"
                             name="projectName"
+                            value="{{ old('projectName') }}"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                           />
                         </div>
@@ -117,6 +121,7 @@
                             type="text"
                             id="poNumber"
                             name="poNumber"
+                            value="{{ old('poNumber') }}"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                           />
                         </div>
@@ -124,9 +129,33 @@
                   </div>
                 </div>
               </div>
+
+              @php
+                  $oldForms = [];
+                  if (old('itemCode')) {
+                      foreach (old('itemCode') as $index => $itemCode) {
+                          $oldForms[] = [
+                              'itemCode' => old("itemCode.$index"),
+                              'itemName' => old("itemName.$index"),
+                              'quantitySend' => old("quantitySend.$index"),
+                              'unitType' => old("unitType.$index"),
+                              'description' => old("description.$index"),
+                              'totalSend' => old("totalSend.$index"),
+                              'information' => old("information.$index"),
+                              'qtyPreOrder' => old("qtyPreOrder.$index"),
+                          ];
+                      }
+                  }
+              @endphp
               
               <div class="space-y-6">
-                <div x-data="{ totalBarang: 1, forms: [{ itemName:'', itemCode: '', quantitySend: '', unitType: '', description: '', totalSend: '', information: '', qtyPreOrder:'' }] }" class="py-4">
+                <div
+                  x-data="{
+                    totalBarang: {{ count($oldForms) > 0 ? count($oldForms) : 1 }},
+                    forms: {{ json_encode(count($oldForms) > 0 ? $oldForms : [['itemName'=>'', 'itemCode'=>'', 'quantitySend'=>'', 'unitType'=>'', 'description'=>'', 'totalSend'=>'', 'information'=>'', 'qtyPreOrder'=>'']]) }}
+                  }"
+                  class="py-4"
+                >
                   <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                     <div class="px-5 py-4 sm:px-6 sm:py-5 flex flex-inline justify-between">
                       <h3 class="text-base font-medium text-gray-800 dark:text-white/90">

@@ -72,7 +72,7 @@
         <img class="dark:hidden" src="./images/logo/logo-track.png" alt="Logo" />
         <img
           class="hidden dark:block"
-          src="./images/logo/logo-track.svg"
+          src="./images/logo/logo-track.png"
           alt="Logo"
         />
       </a>
