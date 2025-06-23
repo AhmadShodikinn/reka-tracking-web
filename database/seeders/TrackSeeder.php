@@ -16,10 +16,12 @@ class TrackSeeder extends Seeder
     {
         $driver = user::where('nip', '3')->first();
 
-        Track::create([
-            'driver_id' => $driver->id,
-            'time_stamp' => now(),
-            'status' => 'active',
-        ]);
+        for ($i = 1; $i <= 7; $i++) {
+            Track::create([
+                'driver_id' => $driver->id,
+                'time_stamp' => now()->addDays($i),
+                'status' => 'active',
+            ]);
+        }
     }
 }
