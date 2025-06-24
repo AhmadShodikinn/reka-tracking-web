@@ -31,7 +31,7 @@ class TravelDocumentSeeder extends Seeder
             'po_number' => '4500000011223',
             'reference_number' => '3615/205/REKA/GEN/PPC/XII/2024',
             'project' => '612',
-            'status' => 'belum terkirim',
+            'status' => 'terkirim',
         ]);
 
         TravelDocument::create([
@@ -41,7 +41,7 @@ class TravelDocumentSeeder extends Seeder
             'po_number' => '4500000011223',
             'reference_number' => '3613/203/REKA/GEN/PPC/XII/2024',
             'project' => '612',
-            'status' => 'belum terkirim',
+            'status' => 'terkirim',
         ]);
 
         TravelDocument::create([
@@ -51,7 +51,7 @@ class TravelDocumentSeeder extends Seeder
             'po_number' => '4500000011223',
             'reference_number' => '0003/003/REKA/GEN/PPC/I/2025',
             'project' => '612',
-            'status' => 'belum terkirim',
+            'status' => 'terkirim',
         ]);
 
         TravelDocument::create([
@@ -61,7 +61,7 @@ class TravelDocumentSeeder extends Seeder
             'po_number' => '4500000011223',
             'reference_number' => '0004/005/REKA/GEN/PPC/I/2025',
             'project' => '612',
-            'status' => 'belum terkirim',
+            'status' => 'terkirim',
         ]);
 
         TravelDocument::create([
@@ -71,7 +71,7 @@ class TravelDocumentSeeder extends Seeder
             'po_number' => '4500000011224',
             'reference_number' => '0005/005/REKA/GEN/PPC/I/2025',
             'project' => '613',
-            'status' => 'belum terkirim',
+            'status' => 'terkirim',
         ]);
 
         TravelDocument::create([

@@ -15,15 +15,18 @@ class TrackingSystemSeeder extends Seeder
      */
     public function run(): void
     {
-        $track = Track::first();
-        $travelDocument = TravelDocument::first();
+        $tracks = Track::all();
+        $documents = TravelDocument::take(7)->get();
 
-        // Menambahkan Tracking System
-        TrackingSystem::create([
-            'track_id' => $track->id,
-            'travel_document_id' => $travelDocument->id,
-            'time_stamp' => now(),
-            'status' => 'active',
-        ]);
+        $count = min($tracks->count(), $documents->count());
+
+        for ($i = 0; $i < $count; $i++) {
+            TrackingSystem::create([
+                'track_id' => $tracks[$i]->id,
+                'travel_document_id' => $documents[$i]->id,
+                'time_stamp' => $tracks[$i]->time_stamp,
+                'status' => 'active',
+            ]);
+        }
     }
 }

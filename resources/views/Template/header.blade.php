@@ -69,9 +69,9 @@
       <!-- Hamburger Toggle BTN -->
 
       <a href="index.html" class="lg:hidden">
-        <img class="dark:hidden" src="./images/logo/logo-track.png" alt="Logo" />
+        <img class="dark:hidden w-32 sm:w-40 md:w-48 h-auto" src="./images/logo/logo-track.png" alt="Logo" />
         <img
-          class="hidden dark:block"
+          class="hidden dark:block w-32 sm:w-40 md:w-48 h-auto"
           src="./images/logo/logo-track.png"
           alt="Logo"
         />
