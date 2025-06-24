@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Track;
-use App\Models\user;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,7 +14,7 @@ class TrackSeeder extends Seeder
      */
     public function run(): void
     {
-        $driver = user::where('nip', '3')->first();
+        $driver = User::where('nip', '3')->first();
 
         for ($i = 1; $i <= 7; $i++) {
             Track::create([

@@ -7,25 +7,21 @@ use App\Http\Controllers\SuperAdminWebController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TravelDocument;
-use App\Models\User;
-use Illuminate\Http\Request;
 
 Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
 
-        if ($user->role === 'superadmin') {
-            return redirect('/profile');
-        } elseif ($user->role === 'admin') {
+        if ($user->role && $user->role->name === 'Super Admin') {
+            return redirect('/users');
+        } elseif ($user->role && $user->role->name === 'Admin') {
             return redirect('/shippings');
-        } else {
-            return redirect('/dashboard'); 
         }
     } else {
         return redirect('/login');
     }
 });
+
 //Auth Web 
 Route::get('/login', function () {
     return view('Auth.login');
@@ -33,7 +29,7 @@ Route::get('/login', function () {
 Route::post('/login', [AuthWebController::class, 'login'])->name('login');
 Route::get('/logout', [AuthWebController::class, 'logout'])->name('logout');
 
-//Admin Rout
+//Admin Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', function () {
         return view('General.profile');
@@ -70,16 +66,3 @@ Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(functio
     Route::put('/users/{id}', [SuperAdminWebController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [SuperAdminWebController::class, 'delete'])->name('users.destroy');
 });
-
-
-
-
-// Route::get('/shippings', function () {
-//     return view('General.shippings');
-// })->name('shippings')->middleware('auth');
-
-// Route::get('/tracking/{track_id}', [AdminWebController::class, 'showTracker'])
-    // ->name('tracking')
-    // ->middleware('auth');
-
-
