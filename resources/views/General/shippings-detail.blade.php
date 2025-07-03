@@ -146,7 +146,7 @@
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->qty_send }}</p>
-                          </td>
+                          </td> 
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->total_send }}</p> 
                           </td>
@@ -154,7 +154,9 @@
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400"> {{ $item->qty_po }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400"> {{ $item->unit }}</p>
+                            <p class="text-gray-500 text-theme-sm dark:text-gray-400">
+                              {{ $item->unit->name ?? '-' }}
+                            </p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->information }}</p>
