@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminWebController;
 use App\Http\Controllers\AuthWebController;
 use App\Http\Controllers\ProfileWebController;
 use App\Http\Controllers\SuperAdminWebController;
+use App\Http\Controllers\UnitWebController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -53,8 +54,14 @@ Route::middleware(['auth'])->group(function () {
         return view('General.tracker');
     })->name('tracking');
     
-    
     Route::get('/search-travel-document', [AdminWebController::class, 'search']);
+
+    Route::get('/units', [UnitWebController::class, 'index'])->name('units.index');
+    Route::get('/units/create', [UnitWebController::class, 'create'])->name('units.add');
+    Route::post('/units', [UnitWebController::class, 'store'])->name('units.store');
+    Route::get('/units/{unit}/edit', [UnitWebController::class, 'edit'])->name('units.edit');
+    Route::put('/units/{unit}', [UnitWebController::class, 'update'])->name('units.update');
+    Route::delete('/units/{unit}', [UnitWebController::class, 'destroy'])->name('units.destroy');
 });
 
 Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(function () {

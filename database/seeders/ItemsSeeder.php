@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Items;
 use App\Models\TravelDocument;
+use App\Models\Unit;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;   
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,8 @@ class ItemsSeeder extends Seeder
      */
     public function run(): void
     {
+        $unitPcs = Unit::where('id', 'pcs')->first();
+
         $travelDocument1 = TravelDocument::where('no_travel_document', '0001/001/REKA/I/2025')->first();
         $travelDocument2 = TravelDocument::where('no_travel_document', '0002/002/REKA/I/2025')->first();
         $travelDocument3 = TravelDocument::where('no_travel_document', '0003/003/REKA/I/2025')->first();
@@ -33,7 +36,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Description for Slot Wago 715-1405',
             'information' => 'Pengganti Rusak Solo K3 024 68'
         ]);
@@ -45,7 +48,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Description for Slot Wago 750-1405',
             'information' => 'Pengganti Rusak Solo K3 024'
         ]);
@@ -57,7 +60,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Description for Slot Wago 750-1504',
             'information' => ''
         ]);
@@ -70,7 +73,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Description for Monitor, Touchscreen 10inch (HDMI Input)',
             'information' => 'Lubang tidak terdapat drat berdasarkan BA 04/REKA/BA/PPC/XII/2024'
         ]);
@@ -82,7 +85,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 2,
             'total_send' => 2,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Wireless Keyboard',
             'information' => 'Model terbaru'
         ]);
@@ -94,7 +97,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 3,
             'total_send' => 3,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Wireless Mouse',
             'information' => 'Desain ergonomis'
         ]);
@@ -107,7 +110,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 2,
             'total_send' => 2,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'HD CCTV Camera',
             'information' => 'Untuk instalasi proyek'
         ]);
@@ -120,7 +123,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 5,
             'total_send' => 5,
             'qty_po' => 2,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Modem 4G LTE',
             'information' => 'Speed 150 Mbps'
         ]);
@@ -132,7 +135,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Wi-Fi 6 Router',
             'information' => 'Desain minimalis'
         ]);
@@ -145,7 +148,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Laptop ultrabook',
             'information' => 'Core i7, 16GB RAM'
         ]);
@@ -157,7 +160,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Wireless Mouse',
             'information' => 'Ergonomis untuk produktivitas tinggi'
         ]);
@@ -169,7 +172,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Docking Station untuk laptop',
             'information' => 'Mendukung multiple display'
         ]);
@@ -181,7 +184,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Noise-canceling Headphone',
             'information' => 'Baterai tahan lama'
         ]);
@@ -194,7 +197,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 3,
             'total_send' => 3,
             'qty_po' => 2,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Portable Projector',
             'information' => 'Resolution 1024x768'
         ]);
@@ -206,7 +209,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 2,
             'total_send' => 2,
             'qty_po' => 2,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Screen Projection untuk presentasi',
             'information' => 'Memudahkan presentasi'
         ]);
@@ -218,7 +221,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 5,
             'total_send' => 5,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Kabel HDMI 10 meter',
             'information' => 'Untuk koneksi projector'
         ]);
@@ -231,7 +234,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 2,
             'total_send' => 2,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Bluetooth speaker',
             'information' => 'Waterproof'
         ]);
@@ -244,7 +247,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Noise-canceling headphones',
             'information' => 'Baterai tahan lama'
         ]);
@@ -257,7 +260,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 4,
             'total_send' => 4,
             'qty_po' => 0,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Smartphone Android',
             'information' => '6.2 inch display'
         ]);
@@ -270,7 +273,7 @@ class ItemsSeeder extends Seeder
             'qty_send' => 1,
             'total_send' => 1,
             'qty_po' => 1,
-            'unit' => 'pcs',
+            'unit_id' => $unitPcs,
             'description' => 'Inkjet Printer',
             'information' => 'Termasuk scanner'
         ]);
