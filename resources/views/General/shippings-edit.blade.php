@@ -74,7 +74,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <!-- Column 1 -->
                             <div class="flex items-center space-x-4">
-                                <label for="sendTo" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kepada</label>
+                                <label for="sendTo" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kepada <p class="text-red-500 inline">*</p></label>
                                 <input
                                     type="text"
                                     x-model="sendTo"
@@ -87,7 +87,7 @@
 
                             <!-- Column 2 -->
                             <div class="flex items-center space-x-4">
-                                <label for="numberSJN" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor SJN</label>
+                                <label for="numberSJN" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor SJN <p class="text-red-500 inline">*</p></label>
                                 <input
                                     type="text"
                                     x-model="numberSJN"
@@ -99,7 +99,7 @@
 
                             <!-- Column 3 -->
                             <div class="flex items-center space-x-4">
-                                <label for="numberRef" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor Ref</label>
+                                <label for="numberRef" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor Ref <p class="text-red-500 inline">*</p></label>
                                 <input
                                     type="text"
                                     x-model="numberRef"
@@ -111,7 +111,7 @@
 
                             <!-- Column 4 -->
                             <div class="flex items-center space-x-4">
-                                <label for="projectName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Proyek</label>
+                                <label for="projectName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Proyek <p class="text-red-500 inline">*</p></label>
                                 <input
                                     type="text"
                                     x-model="projectName"
@@ -123,7 +123,7 @@
 
                             <!-- Column 5 -->
                             <div class="flex items-center space-x-4">
-                                <label for="poNumber" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor PO</label>
+                                <label for="poNumber" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor PO <p class="text-red-500 inline">*</p></label>
                                 <input
                                     type="text"
                                     x-model="poNumber"
@@ -177,7 +177,7 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
                                 <!-- Column 0 -->
                                 <div class="flex items-center space-x-4">
-                                    <label for="itemName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nama barang</label>
+                                    <label for="itemName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nama barang <p class="text-red-500 inline">*</p></label>
                                     <input
                                     type="text"
                                     x-model="form.itemName"
@@ -189,7 +189,7 @@
 
                                 <!-- Column 1 -->
                                 <div class="flex items-center space-x-4">
-                                    <label for="itemCode" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kode barang</label>
+                                    <label for="itemCode" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kode barang <p class="text-red-500 inline">*</p></label>
                                     <input
                                     type="text"
                                     x-model="form.itemCode"
@@ -200,11 +200,14 @@
                                 </div>
 
                                 <!-- Column 3 -->
-                                <select
+                                <div class="flex items-center space-x-4"> 
+                                    <label for="unitType" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Satuan <p class="text-red-500 inline">*</p></label>
+                                    <select
                                     x-model="forms[index].unitType"
                                     name="unitType[]"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                 >
+                                
                                     <option value="">-- Pilih Satuan --</option>
                                     <template x-for="unit in unitOptions" :key="unit.id">
                                         <option 
@@ -215,10 +218,11 @@
                                         </option>
                                     </template>
                                 </select>
+                            </div>
 
                                 <!-- Column 2 -->
                                 <div class="flex items-center space-x-4">
-                                    <label for="quantitySend" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Qty Kirim</label>
+                                    <label for="quantitySend" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Qty Kirim <p class="text-red-500 inline">*</p></label>
                                     <input
                                     type="number"
                                     x-model="form.quantitySend"
@@ -230,7 +234,7 @@
 
                                     <!-- Colum 7 -->
                                     <div class="flex items-center space-x-4">
-                                    <label for="qtyPreOrder" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Qty PO</label>
+                                    <label for="qtyPreOrder" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Qty PO <p class="text-red-500 inline">*</p></label>
                                     <input
                                     type="number"
                                     x-model="form.qtyPreOrder"
@@ -242,7 +246,7 @@
 
                                 <!-- Column 5 -->
                                 <div class="flex items-center space-x-4">
-                                    <label for="totalSend" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Total Kirim</label>
+                                    <label for="totalSend" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Total Kirim <p class="text-red-500 inline">*</p></label>
                                     <input
                                     type="number"
                                     x-model="form.totalSend"
@@ -254,7 +258,7 @@
 
                                 <!-- Column 4 -->
                                 <div class="flex items-center space-x-4">
-                                    <label for="description" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Deskripsi</label>
+                                    <label for="description" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Deskripsi <p class="text-red-500 inline">*</p></label>
                                     <input
                                     type="text"
                                     x-model="form.description"

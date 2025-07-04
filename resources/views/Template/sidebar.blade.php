@@ -173,10 +173,10 @@
                   class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
                 >
                   <li><a href="{{ route('units.index') }}" class="menu-dropdown-item {{ request()->is('units*') ? 'text-primary font-medium' : '' }}">Satuan Unit</a></li>
+                  <!-- <li><a href="#" class="menu-dropdown-item {{ request()->is('items*') ? 'text-primary font-medium' : '' }}">Daftar Barang</a></li>
                   <li><a href="#" class="menu-dropdown-item {{ request()->is('partners*') ? 'text-primary font-medium' : '' }}">Daftar Mitra</a></li>
                   <li><a href="#" class="menu-dropdown-item {{ request()->is('projects*') ? 'text-primary font-medium' : '' }}">Daftar Proyek</a></li>
-                  <li><a href="#" class="menu-dropdown-item {{ request()->is('items*') ? 'text-primary font-medium' : '' }}">Daftar Barang</a></li>
-                  <li><a href="#" class="menu-dropdown-item {{ request()->is('po*') ? 'text-primary font-medium' : '' }}">Daftar PO</a></li>
+                  <li><a href="#" class="menu-dropdown-item {{ request()->is('po*') ? 'text-primary font-medium' : '' }}">Daftar PO</a></li> -->
                 </ul>
             </li>
         </ul>

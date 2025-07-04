@@ -161,7 +161,7 @@ class AdminWebController extends Controller
             'qtyPreOrder.*.required' => ':attribute harus diisi.',
             'unitType.*.required' => ':attribute harus diisi.',
             'description.*.required' => ':attribute harus diisi.',
-            'information.*.required' => ':attribute harus diisi.',
+            // 'information.*.required' => ':attribute harus diisi.',
         ];
 
         $rules = [
@@ -178,7 +178,7 @@ class AdminWebController extends Controller
             'qtyPreOrder.*' => 'required',
             'unitType.*' => 'required',
             'description.*' => 'required',
-            'information.*' => 'required',
+            'information.*' => 'nullable',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages, $attributes);
