@@ -12,7 +12,7 @@ class Items extends Model
     protected $table = 'items'; 
 
     protected $fillable = [
-        'travel_document_id', 'item_code', 'item_name', 'qty_send', 'total_send', 'qty_po', 'unit_id', 'description', 'information'
+        'travel_document_id', 'master_item_id', 'qty_send', 'total_send', 'qty_po', 'unit_id', 'information'
     ];
 
     public function travelDocument()
@@ -24,4 +24,10 @@ class Items extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+
+    public function masterItem()
+    {
+        return $this->belongsTo(MasterItem::class);
+    }
+
 }

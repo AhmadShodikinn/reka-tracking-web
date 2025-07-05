@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterItem;
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
 use App\Models\Unit;
@@ -41,7 +42,8 @@ class AdminWebController extends Controller
 
     public function shippingsAdd() {
         $units = Unit::all();
-        return view('General.shippings-add', compact('units'));
+        $masterItems = MasterItem::select('id', 'item_code', 'item_name', 'description')->get();
+        return view('General.shippings-add', compact('units', 'masterItems'));
     }
 
     public function shippingsEdit($id) {

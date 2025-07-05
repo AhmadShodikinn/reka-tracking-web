@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,       
             UnitsSeeder::class,
             TravelDocumentSeeder::class, 
+            MasterItemsSeeder::class,
             ItemsSeeder::class,          
             TrackingSystemSeeder::class, 
         ]);
