@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MasterItem;
+use App\Models\Partner;
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
 use App\Models\Unit;
@@ -22,38 +23,34 @@ class AdminWebController extends Controller
 
 
     public function searchDocument(Request $request)
-{
-    $query = $request->query('search');
+    {
+        $query = $request->query('search');
 
-    $documents = TravelDocument::with('sendTo')
-        ->where('no_travel_document', 'like', "%$query%")
-        ->orWhereHas('sendTo', function ($q) use ($query) {
-            $q->where('company_name', 'like', "%$query%");
-        })
-        ->orWhere('status', 'like', "%$query%")
-        ->orWhere('project', 'like', "%$query%")
-        ->orderBy('id', 'desc')
-        ->get();
+        $documents = TravelDocument::with('sendTo')
+            ->where('no_travel_document', 'like', "%$query%")
+            ->orWhereHas('sendTo', function ($q) use ($query) {
+                $q->where('company_name', 'like', "%$query%");
+            })
+            ->orWhere('status', 'like', "%$query%")
+            ->orWhere('project', 'like', "%$query%")
+            ->orderBy('id', 'desc')
+            ->get();
 
-    // Flatten response
-    $results = $documents->map(function ($item) {
-        return [
-            'id' => $item->id,
-            'no_travel_document' => $item->no_travel_document,
-            'date_no_travel_document' => $item->date_no_travel_document,
-            'status' => $item->status,
-            'project' => $item->project,
-            'company_name' => optional($item->sendTo)->company_name ?? '-', // flatten here
-        ];
-    });
+        $results = $documents->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'no_travel_document' => $item->no_travel_document,
+                'date_no_travel_document' => $item->date_no_travel_document,
+                'status' => $item->status,
+                'project' => $item->project,
+                'company_name' => optional($item->sendTo)->company_name ?? '-',
+            ];
+        });
 
-    return response()->json([
-        'results' => $results,
-    ]);
-}
-
-
-
+        return response()->json([
+            'results' => $results,
+        ]);
+    }
 
     public function shippingsDetail($id) {
         $travelDocument = TravelDocument::with(['items.unit', 'items.masterItem'])->findOrFail($id);
@@ -62,14 +59,16 @@ class AdminWebController extends Controller
 
     public function shippingsAdd() {
         $units = Unit::all();
-        $masterItems = MasterItem::select('id', 'item_code', 'item_name', 'description')->get();
-        return view('General.shippings-add', compact('units', 'masterItems'));
+        $masterItems = MasterItem::all();
+        $partners = Partner::all();
+        return view('General.shippings-add', compact('units', 'masterItems', 'partners'));
     }
 
     public function shippingsEdit($id)
     {
         $travelDocument = TravelDocument::with(['items.masterItem', 'items.unit'])->findOrFail($id);
 
+        $partners = Partner::all();
         $units = Unit::all();
         $masterItems = MasterItem::all();
 
@@ -89,6 +88,7 @@ class AdminWebController extends Controller
 
         return view('General.shippings-edit', [
             'travelDocument' => $travelDocument,
+            'partners' => $partners,
             'units' => $units,
             'masterItems' => $masterItems,
             'itemsMapped' => $itemsMapped
@@ -115,7 +115,7 @@ class AdminWebController extends Controller
 
         $travelDocument->update([
             'no_travel_document' => $validated['numberSJN'],
-            'send_to' => $validated['sendTo'],
+            'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
             'po_number' => $validated['poNumber'],
             'project' => $validated['projectName'],
@@ -219,7 +219,7 @@ class AdminWebController extends Controller
         $travelDocument = TravelDocument::create([
             'no_travel_document' => $validated['numberSJN'],
             'date_no_travel_document' => now(),
-            'send_to' => $validated['sendTo'],
+            'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
             'po_number' => $validated['poNumber'],
             'project' => $validated['projectName'],
