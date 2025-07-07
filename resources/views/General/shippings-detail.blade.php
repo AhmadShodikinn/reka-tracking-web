@@ -139,10 +139,10 @@
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->item_name }}</p>
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->masterItem->item_name ?? '-' }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->item_code }}</p> 
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->masterItem->item_code ?? '-' }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->qty_send }}</p>
@@ -159,7 +159,7 @@
                             </p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->information }}</p>
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->masterItem->description ?? '-' }}</p>
                           </td>
                         </tr>
                     @endforeach
