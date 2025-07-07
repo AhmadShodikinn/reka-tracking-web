@@ -55,7 +55,7 @@
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Kepada:</p>
                   <p class="font-normal truncate hover:overflow-visible hover:whitespace-normal hover:text-ellipsis">
-                    {{ $travelDocument->send_to }}
+                    {{ $travelDocument->sendTo->company_name ?? '-' }}
                   </p>
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">

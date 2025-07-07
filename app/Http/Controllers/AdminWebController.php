@@ -15,24 +15,44 @@ class AdminWebController extends Controller
 {
     // Admin handling management SJN
     public function shippingsIndex() {
-        $listTravelDocument = TravelDocument::paginate(10);
+        $listTravelDocument = TravelDocument::with('sendTo')->paginate(10);
 
         return view('General.shippings', compact('listTravelDocument')); 
     }
 
 
-    public function searchDocument(Request $request){
+    public function searchDocument(Request $request)
+{
     $query = $request->query('search');
 
-    $results = TravelDocument::where('no_travel_document', 'like', "%$query%")
-        ->orWhere('send_to', 'like', "%$query%")
+    $documents = TravelDocument::with('sendTo')
+        ->where('no_travel_document', 'like', "%$query%")
+        ->orWhereHas('sendTo', function ($q) use ($query) {
+            $q->where('company_name', 'like', "%$query%");
+        })
         ->orWhere('status', 'like', "%$query%")
         ->orWhere('project', 'like', "%$query%")
         ->orderBy('id', 'desc')
-        ->get(); 
+        ->get();
 
-        return response()->json(['results' => $results]);
-    }
+    // Flatten response
+    $results = $documents->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'no_travel_document' => $item->no_travel_document,
+            'date_no_travel_document' => $item->date_no_travel_document,
+            'status' => $item->status,
+            'project' => $item->project,
+            'company_name' => optional($item->sendTo)->company_name ?? '-', // flatten here
+        ];
+    });
+
+    return response()->json([
+        'results' => $results,
+    ]);
+}
+
+
 
 
     public function shippingsDetail($id) {

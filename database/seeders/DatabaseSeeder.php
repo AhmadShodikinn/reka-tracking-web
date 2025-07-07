@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             TrackSeeder::class,          
             LocationSeeder::class,       
             UnitsSeeder::class,
+            PartnersSeeder::class,
             TravelDocumentSeeder::class, 
             MasterItemsSeeder::class,
             ItemsSeeder::class,          

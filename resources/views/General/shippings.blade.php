@@ -148,8 +148,9 @@
                         <td class="px-5 py-4 sm:px-6">
                           <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ \Carbon\Carbon::parse($data->date_no_travel_document)->format('d/m/Y') }}</p>
                         </td>
+                        <!-- ngebug -->
                         <td class="px-5 py-4 sm:px-6">
-                          <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->send_to }}</p>
+                          <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->sendTo->company_name }}</p>
                         </td>
                         <td class="px-5 py-4 sm:px-6">
                           <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->project }}</p>

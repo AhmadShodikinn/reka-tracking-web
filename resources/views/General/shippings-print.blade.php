@@ -130,7 +130,7 @@
                         </tr>
                         <tr>
                             <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Kepada</td>
-                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->send_to }}</td>
+                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->sendTo->company_name }}</td>
                         </tr>
                     @endif
                     <tr>
