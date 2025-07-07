@@ -3,25 +3,22 @@
 namespace Database\Seeders;
 
 use App\Models\Partner;
+use App\Models\Project;
+use App\Models\Projects;
 use App\Models\TravelDocument;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TravelDocumentSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-   
         $documents = [
             [
                 'no_travel_document' => '0001/001/REKA/I/2025',
                 'partner' => 'Purna Jual PT INKA (Persero)',
                 'po_number' => '4500000011223',
                 'reference_number' => '0001/001/REKA/GEN/PPC/I/2025',
-                'project' => '612 Card replacement PT KAI',
+                'project_code' => '612-CR',
                 'status' => 'terkirim',
             ],
             [
@@ -29,7 +26,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'PT DUTA ATAYA ANUGERAH',
                 'po_number' => '4500000011223',
                 'reference_number' => '3615/205/REKA/GEN/PPC/XII/2024',
-                'project' => '612',
+                'project_code' => '612',
                 'status' => 'terkirim',
             ],
             [
@@ -37,7 +34,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'PT MITRA BERKAH MAPAN',
                 'po_number' => '4500000011223',
                 'reference_number' => '3613/203/REKA/GEN/PPC/XII/2024',
-                'project' => '612',
+                'project_code' => '612',
                 'status' => 'terkirim',
             ],
             [
@@ -45,7 +42,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'CV. ROHA ELEKTRIK BERSAUDARA',
                 'po_number' => '4500000011223',
                 'reference_number' => '0003/003/REKA/GEN/PPC/I/2025',
-                'project' => '612',
+                'project_code' => '612',
                 'status' => 'terkirim',
             ],
             [
@@ -53,7 +50,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'Polytron Service Center',
                 'po_number' => '4500000011223',
                 'reference_number' => '0004/005/REKA/GEN/PPC/I/2025',
-                'project' => '612',
+                'project_code' => '612',
                 'status' => 'terkirim',
             ],
             [
@@ -61,7 +58,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'CV. GRAFIKA ABADI',
                 'po_number' => '4500000011224',
                 'reference_number' => '0005/005/REKA/GEN/PPC/I/2025',
-                'project' => '613',
+                'project_code' => '612-CR',
                 'status' => 'terkirim',
             ],
             [
@@ -69,7 +66,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'PT. KARYA SEJAHTERA',
                 'po_number' => '4500000011225',
                 'reference_number' => '0006/006/REKA/GEN/PPC/I/2025',
-                'project' => '614',
+                'project_code' => '612-CR',
                 'status' => 'terkirim',
             ],
             [
@@ -77,7 +74,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'PT. SINDO TEKNOLOGI',
                 'po_number' => '4500000011226',
                 'reference_number' => '0007/007/REKA/GEN/PPC/I/2025',
-                'project' => '615',
+                'project_code' => '612-CR',
                 'status' => 'belum terkirim',
             ],
             [
@@ -85,7 +82,7 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'PT. Sumber Daya Teknik',
                 'po_number' => '4500000011227',
                 'reference_number' => '0008/0008/REKA/GEN/PPC/I/2025',
-                'project' => '616',
+                'project_code' => '612-CR',
                 'status' => 'belum terkirim',
             ],
             [
@@ -93,25 +90,26 @@ class TravelDocumentSeeder extends Seeder
                 'partner' => 'PT. MANFAAT BERSAMA',
                 'po_number' => '4500000011228',
                 'reference_number' => '0009/009/REKA/GEN/PPC/I/2025',
-                'project' => '617',
+                'project_code' => '612-CR',
                 'status' => 'belum terkirim',
             ],
         ];
 
         foreach ($documents as $doc) {
             $partner = Partner::where('company_name', $doc['partner'])->first();
+            $project = Projects::where('project_code', $doc['project_code'])->first();
 
-            if ($partner) {
+            if ($partner && $project) {
                 TravelDocument::create([
                     'no_travel_document' => $doc['no_travel_document'],
                     'date_no_travel_document' => now(),
                     'send_to_id' => $partner->id,
                     'po_number' => $doc['po_number'],
                     'reference_number' => $doc['reference_number'],
-                    'project' => $doc['project'],
+                    'project_id' => $project->id,
                     'status' => $doc['status'],
                 ]);
             }
-        }   
+        }
     }
 }

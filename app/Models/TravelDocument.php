@@ -14,7 +14,7 @@ class TravelDocument extends Model
     protected $table = 'travel_document';
 
     protected $fillable = [
-        'no_travel_document', 'date_no_travel_document', 'send_to_id', 'po_number', 'reference_number', 'project', 'status',
+        'no_travel_document', 'date_no_travel_document', 'send_to_id', 'po_number', 'reference_number', 'project_id', 'status',
     ];
 
     protected $dates = ['deleted_at'];
@@ -32,5 +32,10 @@ class TravelDocument extends Model
     public function sendTo()
     {
         return $this->belongsTo(Partner::class, 'send_to_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Projects::class);
     }
 }

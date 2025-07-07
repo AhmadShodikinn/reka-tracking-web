@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class UnitWebController extends Controller
 {
-        public function index()
+    public function index()
     {
         $units = Unit::paginate(10);
         return view('General.units', compact('units'));

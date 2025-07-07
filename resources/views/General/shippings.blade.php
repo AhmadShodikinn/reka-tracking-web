@@ -153,7 +153,7 @@
                           <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->sendTo->company_name }}</p>
                         </td>
                         <td class="px-5 py-4 sm:px-6">
-                          <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->project }}</p>
+                          <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->project->project_name }}</p>
                         </td>
                         <td class="px-5 py-4 sm:px-6 whitespace-nowrap">
                           <p class="text-gray-500 inl text-theme-sm dark:text-gray-400">{{ $data->status }}</p>

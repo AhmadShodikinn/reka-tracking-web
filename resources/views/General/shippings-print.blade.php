@@ -126,7 +126,7 @@
                     @else
                         <tr>
                             <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Proyek</td>
-                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->project }}</td>
+                            <td style="font-size: 0.75rem; font-weight: light; margin: 0;">: {{ $travelDocument->project->project_name }}</td>
                         </tr>
                         <tr>
                             <td style="font-size: 0.75rem; font-weight: bold; margin: 0;">Kepada</td>

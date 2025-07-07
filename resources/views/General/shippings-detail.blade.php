@@ -60,7 +60,7 @@
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Proyek:</p>
-                  <p class="font-normal">{{ $travelDocument->project }}</p>
+                  <p class="font-normal">{{ $travelDocument->project->project_name }}</p>
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Tanggal SJN:</p>

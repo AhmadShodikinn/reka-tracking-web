@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MasterItem;
 use App\Models\Partner;
+use App\Models\Projects;
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
 use App\Models\Unit;
@@ -61,7 +62,9 @@ class AdminWebController extends Controller
         $units = Unit::all();
         $masterItems = MasterItem::all();
         $partners = Partner::all();
-        return view('General.shippings-add', compact('units', 'masterItems', 'partners'));
+        $projects = Projects::all();
+
+        return view('General.shippings-add', compact('units', 'masterItems', 'partners', 'projects'));
     }
 
     public function shippingsEdit($id)
@@ -71,6 +74,7 @@ class AdminWebController extends Controller
         $partners = Partner::all();
         $units = Unit::all();
         $masterItems = MasterItem::all();
+        $projects = Projects::all();
 
         $itemsMapped = $travelDocument->items->map(function ($item) {
             return [
@@ -91,7 +95,8 @@ class AdminWebController extends Controller
             'partners' => $partners,
             'units' => $units,
             'masterItems' => $masterItems,
-            'itemsMapped' => $itemsMapped
+            'itemsMapped' => $itemsMapped,
+            'projects' => $projects
         ]);
     }
 
@@ -118,7 +123,7 @@ class AdminWebController extends Controller
             'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
             'po_number' => $validated['poNumber'],
-            'project' => $validated['projectName'],
+            'project_id' => $validated['projectName'],
             'status' => 'belum terkirim',
         ]);
 
@@ -222,7 +227,7 @@ class AdminWebController extends Controller
             'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
             'po_number' => $validated['poNumber'],
-            'project' => $validated['projectName'],
+            'project_id' => $validated['projectName'],
             'status' => 'belum terkirim',
         ]);
 

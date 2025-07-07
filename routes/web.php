@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthWebController;
 use App\Http\Controllers\MasterItemsController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProfileWebController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\SuperAdminWebController;
 use App\Http\Controllers\UnitWebController;
 use App\Http\Middleware\RoleMiddleware;
@@ -78,6 +79,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/partners/{partner}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{partner}', [PartnerController::class, 'update'])->name('partners.update');
     Route::delete('/partners/{partner}', [PartnerController::class, 'destroy'])->name('partners.destroy');
+
+    Route::get('/projects', [ProjectsController::class, 'index'])->name('projects.index');
+    Route::get('/projects/create', [ProjectsController::class, 'create'])->name('projects.create');
+    Route::post('/projects', [ProjectsController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{project}/edit', [ProjectsController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}', [ProjectsController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
 });
 
 Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(function () {

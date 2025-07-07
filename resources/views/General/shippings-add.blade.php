@@ -107,17 +107,27 @@
                           />
                         </div>
 
-                        <!-- Column 4 -->
+                        <!-- Column 4: Project Dropdown -->
                         <div class="flex items-center space-x-4">
-                          <label for="projectName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Proyek <p class="text-red-500 inline">*</p></label>
-                          <input
-                            type="text"
+                          <label for="projectName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">
+                            Proyek <p class="text-red-500 inline">*</p>
+                          </label>
+                          <select
                             id="projectName"
                             name="projectName"
-                            value="{{ old('projectName') }}"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                          />
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                            required
+                          >
+                            <option value="">-- Pilih Proyek --</option>
+                            @foreach ($projects as $project)
+                              <option value="{{ $project->id }}"
+                                {{ old('project_id', $travelDocument->project_id ?? '') == $project->id ? 'selected' : '' }}>
+                                {{ $project->project_code }} - {{ $project->project_name }}
+                              </option>
+                            @endforeach
+                          </select>
                         </div>
+
 
                         <!-- Column 5 -->
                         <div class="flex items-center space-x-4">
