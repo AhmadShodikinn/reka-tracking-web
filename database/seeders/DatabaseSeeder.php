@@ -16,12 +16,12 @@ class DatabaseSeeder extends Seeder
             DivisionSeeder::class,      
             RoleSeeder::class,           
             UserSeeder::class,           
-            TrackSeeder::class,          
-            LocationSeeder::class,       
-            UnitsSeeder::class,
-            TravelDocumentSeeder::class, 
-            ItemsSeeder::class,          
-            TrackingSystemSeeder::class, 
+            // TrackSeeder::class,          
+            // LocationSeeder::class,       
+            // UnitsSeeder::class,
+            // TravelDocumentSeeder::class, 
+            // ItemsSeeder::class,          
+            // TrackingSystemSeeder::class, 
         ]);
     }
 }
