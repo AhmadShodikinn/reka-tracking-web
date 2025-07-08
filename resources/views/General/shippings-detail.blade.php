@@ -74,7 +74,7 @@
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">PO:</p>
-                  <p class="font-normal">{{ $travelDocument->po_number }}</p>
+                  <p class="font-normal">{{ $travelDocument->preorder->po_number ?? '-' }}</p>
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Ref:</p>
