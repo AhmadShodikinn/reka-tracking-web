@@ -23,11 +23,11 @@ return new class extends Migration
         });
     }
     
-    /**
+    /**php 
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('user');
+        Schema::dropIfExists('users');
     }
 };
