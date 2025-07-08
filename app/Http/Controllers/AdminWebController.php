@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
@@ -34,19 +35,20 @@ class AdminWebController extends Controller
 
 
     public function shippingsDetail($id) {
-        $travelDocument = TravelDocument::with('items')->findOrFail($id);
-
+        $travelDocument = TravelDocument::with(['items.unit'])->findOrFail($id);
         return view('General.shippings-detail', compact('travelDocument'));
     }
 
     public function shippingsAdd() {
-        return view('General.shippings-add'); 
+        $units = Unit::all();
+        return view('General.shippings-add', compact('units'));
     }
 
     public function shippingsEdit($id) {
         $travelDocument = TravelDocument::with('items')->findOrFail($id);
+        $units = Unit::all();
 
-        return view('General.shippings-edit', compact('travelDocument'));
+        return view('General.shippings-edit', compact('travelDocument', 'units'));
     }
 
     public function shippingsUpdate(Request $request, $id){
@@ -56,7 +58,6 @@ class AdminWebController extends Controller
             'numberRef' => 'required',
             'projectName' => 'required',
             'poNumber' => 'required',
-
             'itemCode.*' => 'required',
             'itemName.*' => 'required',
             'quantitySend.*' => 'required',
@@ -89,7 +90,7 @@ class AdminWebController extends Controller
                 'qty_send' => $validated['quantitySend'][$key],
                 'total_send' => $validated['totalSend'][$key],
                 'qty_po' => $validated['qtyPreOrder'][$key],
-                'unit' => $validated['unitType'][$key],
+                'unit_id' => $validated['unitType'][$key],
                 'description' => $validated['description'][$key],
                 'information' => $validated['information'][$key],
             ];
@@ -160,7 +161,7 @@ class AdminWebController extends Controller
             'qtyPreOrder.*.required' => ':attribute harus diisi.',
             'unitType.*.required' => ':attribute harus diisi.',
             'description.*.required' => ':attribute harus diisi.',
-            'information.*.required' => ':attribute harus diisi.',
+            // 'information.*.required' => ':attribute harus diisi.',
         ];
 
         $rules = [
@@ -177,7 +178,7 @@ class AdminWebController extends Controller
             'qtyPreOrder.*' => 'required',
             'unitType.*' => 'required',
             'description.*' => 'required',
-            'information.*' => 'required',
+            'information.*' => 'nullable',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages, $attributes);
@@ -187,6 +188,7 @@ class AdminWebController extends Controller
         }
 
         $validated = $validator->validated();
+
 
         $travelDocument = TravelDocument::create([
             'no_travel_document' => $validated['numberSJN'],
@@ -207,7 +209,7 @@ class AdminWebController extends Controller
                 'qty_send' => $validated['quantitySend'][$key],
                 'total_send' => $validated['totalSend'][$key],
                 'qty_po' => $validated['qtyPreOrder'][$key],
-                'unit' => $validated['unitType'][$key],
+                'unit_id' => $validated['unitType'][$key],
                 'description' => $validated['description'][$key],
                 'information' => $validated['information'][$key],
             ];
