@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminWebController;
 use App\Http\Controllers\AuthWebController;
 use App\Http\Controllers\MasterItemsController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\PreorderController;
 use App\Http\Controllers\ProfileWebController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\SuperAdminWebController;
@@ -86,6 +87,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/projects/{project}/edit', [ProjectsController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectsController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+
+    Route::get('/preorders', [PreorderController::class, 'index'])->name('preorders.index');
+    Route::get('/preorders/create', [PreorderController::class, 'create'])->name('preorders.create');
+    Route::post('/preorders', [PreorderController::class, 'store'])->name('preorders.store');
+    Route::get('/preorders/{id}', [PreorderController::class, 'showDetailPreorder'])->name('preorders.detail');
+    Route::get('/preorders/{id}/edit', [PreorderController::class, 'edit'])->name('preorders.edit');
+    Route::put('/preorders/{id}', [PreorderController::class, 'update'])->name('preorders.update');
+    Route::delete('/preorders/{id}', [PreorderController::class, 'destroy'])->name('preorders.destroy');
 });
 
 Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(function () {

@@ -176,7 +176,7 @@
                   <li><a href="{{ route('items.index') }}" class="menu-dropdown-item {{ request()->is('items*') ? 'text-primary font-medium' : '' }}">Daftar Barang</a></li>
                   <li><a href="{{ route('partners.index') }}" class="menu-dropdown-item {{ request()->is('partners*') ? 'text-primary font-medium' : '' }}">Daftar Mitra</a></li>
                   <li><a href="{{ route('projects.index') }}" class="menu-dropdown-item {{ request()->is('projects*') ? 'text-primary font-medium' : '' }}">Daftar Proyek</a></li>
-                  <li><a href="#" class="menu-dropdown-item {{ request()->is('po*') ? 'text-primary font-medium' : '' }}">Daftar PO</a></li>
+                  <li><a href="{{ route('preorders.index') }}" class="menu-dropdown-item {{ request()->is('po*') ? 'text-primary font-medium' : '' }}">Daftar PO</a></li>
                 </ul>
             </li>
         </ul>
