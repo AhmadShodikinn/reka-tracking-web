@@ -51,8 +51,72 @@
               @include('Template.breadcrumb')
             </div>
 
+                   @php
+                  $oldForms = [];
+                  if (old('itemCode')) {
+                      foreach (old('itemCode') as $index => $itemCode) {
+                          $oldForms[] = [
+                              'itemCode' => old("itemCode.$index"),
+                              'itemName' => old("itemName.$index"),
+                              'quantitySend' => old("quantitySend.$index"),
+                              'unitType' => old("unitType.$index"),
+                              'description' => old("description.$index"),
+                              'totalSend' => old("totalSend.$index"),
+                              'information' => old("information.$index"),
+                              'qtyPreOrder' => old("qtyPreOrder.$index"),
+                          ];
+                      }
+                  }
+              @endphp
+              
+
             <div>
-              <form method="POST" action="{{ route('shippings.store') }}">
+              <form method="POST" action="{{ route('shippings.store') }}" 
+              x-data="{
+                  totalBarang: {{ count($oldForms) > 0 ? count($oldForms) : 1 }},
+                  forms: {{ json_encode(count($oldForms) > 0 ? $oldForms : [['itemName'=>'', 'masterItemId'=>'', 'quantitySend'=>'', 'unitType'=>'', 'description'=>'', 'totalSend'=>'', 'information'=>'', 'qtyPreOrder'=>'']]) }},
+                  masterItems: {{ $masterItems->toJson() }},
+                  preorders: {{ json_encode($preorder) }},
+
+                  updateItemDetails(index) {
+                    let selectedId = this.forms[index].masterItemId;
+                    let item = this.masterItems.find(i => i.id == selectedId);
+                    if (item) {
+                      this.forms[index].itemName = item.item_name;
+                      this.forms[index].description = item.description;
+                    } else {
+                      this.forms[index].itemName = '';
+                      this.forms[index].description = '';
+                    }
+                  },
+
+                  updateItemDetailByPreorder() {
+                    let selectedPoId = document.getElementById('poNumber').value;
+                    if (!selectedPoId) {
+                      this.forms = [];
+                      this.totalBarang = 0;
+                      return;
+                    }
+                    let preorder = this.preorders.find(po => po.id == selectedPoId);
+                    if (preorder && preorder.items) {
+                      this.forms = preorder.items.map(item => ({
+                        itemName: item.master_item?.item_name || '',
+                        masterItemId: item.master_item?.id || '',
+                        description: item.master_item?.description || '',
+                        unitType: item.unit?.id || '',
+                        quantitySend: item.quantity_send || '',
+                        totalSend: item.total_send || '',
+                        information: item.information || '',
+                        qtyPreOrder: item.qty_po || ''
+                      }));
+                      this.totalBarang = this.forms.length;
+
+                      this.sendTo = preorder.partner?.id || '';
+                      this.projectName = preorder.project?.id || '';
+                    }
+                  }
+                }"
+              >
               @csrf
               <div class="space-y-6">
                 <div
@@ -70,6 +134,7 @@
                         <div class="flex items-center space-x-4">
                           <label for="sendTo" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kepada <p class="text-red-500 inline">*</p></label>
                           <select
+                            x-model="sendTo"
                             id="sendTo"
                             name="sendTo"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
@@ -113,6 +178,7 @@
                             Proyek <p class="text-red-500 inline">*</p>
                           </label>
                           <select
+                            x-model="projectName"
                             id="projectName"
                             name="projectName"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
@@ -131,21 +197,30 @@
 
                         <!-- Column 5 -->
                         <div class="flex items-center space-x-4">
-                          <label for="poNumber" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Nomor PO <p class="text-red-500 inline">*</p></label>
-                          <input
-                            type="text"
+                          <label for="poNumber" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">
+                            Nomor PO <p class="text-red-500 inline">*</p>
+                          </label>
+                          <select
                             id="poNumber"
                             name="poNumber"
-                            value="{{ old('poNumber') }}"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                          />
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                            @change="updateItemDetailByPreorder()"
+                          >
+                            <option value="">-- Pilih PO --</option>
+                            @foreach ($preorder as $po)
+                                <option value="{{ $po->id }}" {{ old('poNumber') == $po->id ? 'selected' : '' }}>
+                                    {{ $po->po_number }}
+                                </option>
+                            @endforeach
+                          </select>
                         </div>
+
                       </div>
                   </div>
                 </div>
               </div>
 
-              @php
+              <!-- @php
                   $oldForms = [];
                   if (old('itemCode')) {
                       foreach (old('itemCode') as $index => $itemCode) {
@@ -162,13 +237,14 @@
                       }
                   }
               @endphp
-              
+               -->
               <div class="space-y-6">
-                <div
+                <!-- <div
                   x-data="{
                     totalBarang: {{ count($oldForms) > 0 ? count($oldForms) : 1 }},
                     forms: {{ json_encode(count($oldForms) > 0 ? $oldForms : [['itemName'=>'', 'masterItemId'=>'', 'quantitySend'=>'', 'unitType'=>'', 'description'=>'', 'totalSend'=>'', 'information'=>'', 'qtyPreOrder'=>'']]) }},
-                    masterItems: {{ $masterItems->toJson() }},
+                    masterItems: {{ $masterItems->toJson() }},                  
+                    preorders: {{ json_encode($preorder) }},  
 
                     updateItemDetails(index) {
                         let selectedId = this.forms[index].masterItemId;
@@ -180,10 +256,10 @@
                             this.forms[index].itemName = '';
                             this.forms[index].description = '';
                         }
-                    }
+                    },
                   }"
                   class="py-4"
-                >
+                > -->
                   <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                     <div class="px-5 py-4 sm:px-6 sm:py-5 flex flex-inline justify-between">
                       <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
@@ -340,7 +416,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              <!-- </div> -->
             </form>
 
         </main>

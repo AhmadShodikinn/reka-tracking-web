@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MasterItem;
 use App\Models\Partner;
+use App\Models\Preorder;
 use App\Models\Projects;
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
@@ -63,13 +64,20 @@ class AdminWebController extends Controller
         $masterItems = MasterItem::all();
         $partners = Partner::all();
         $projects = Projects::all();
+        $preorder = Preorder::with([
+            'items.masterItem',
+            'items.unit',
+            'partner',
+            'project',
+        ])->get();
 
-        return view('General.shippings-add', compact('units', 'masterItems', 'partners', 'projects'));
+
+        return view('General.shippings-add', compact('units', 'masterItems', 'partners', 'projects', 'preorder'));
     }
 
     public function shippingsEdit($id)
     {
-        $travelDocument = TravelDocument::with(['items.masterItem', 'items.unit'])->findOrFail($id);
+        $travelDocument = TravelDocument::with(['items.masterItem', 'items.unit', 'preorder'])->findOrFail($id);
 
         $partners = Partner::all();
         $units = Unit::all();
@@ -226,7 +234,7 @@ class AdminWebController extends Controller
             'date_no_travel_document' => now(),
             'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
-            'po_number' => $validated['poNumber'],
+            'preorder_id' => $validated['poNumber'],
             'project_id' => $validated['projectName'],
             'status' => 'belum terkirim',
         ]);

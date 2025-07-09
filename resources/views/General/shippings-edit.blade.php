@@ -60,7 +60,7 @@
                     numberSJN: '{{ $travelDocument->no_travel_document }}',
                     numberRef: '{{ $travelDocument->reference_number }}',
                     projectName: '{{ $travelDocument->project }}',
-                    poNumber: '{{ $travelDocument->po_number }}'
+                    poNumber: '{{ $travelDocument->preorder->po_number ?? '' }}',
                 }" class="space-y-6">
 
                 <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
