@@ -55,12 +55,12 @@
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Kepada:</p>
                   <p class="font-normal truncate hover:overflow-visible hover:whitespace-normal hover:text-ellipsis">
-                    {{ $travelDocument->send_to }}
+                    {{ $travelDocument->sendTo->company_name ?? '-' }}
                   </p>
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Proyek:</p>
-                  <p class="font-normal">{{ $travelDocument->project }}</p>
+                  <p class="font-normal">{{ $travelDocument->project->project_name }}</p>
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Tanggal SJN:</p>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">PO:</p>
-                  <p class="font-normal">{{ $travelDocument->po_number }}</p>
+                  <p class="font-normal">{{ $travelDocument->preorder->po_number ?? '-' }}</p>
                 </div>
                 <div class="flex flex-inline mb-3 gap-1">
                   <p class="font-semibold">Ref:</p>
@@ -139,10 +139,10 @@
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $index + 1 }}</p> 
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->item_name }}</p>
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->masterItem->item_name ?? '-' }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->item_code }}</p> 
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->masterItem->item_code ?? '-' }}</p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
                               <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->qty_send }}</p>
@@ -159,7 +159,7 @@
                             </p>
                           </td>
                           <td class="px-5 py-4 sm:px-6">
-                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->information }}</p>
+                              <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $item->masterItem->description ?? '-' }}</p>
                           </td>
                         </tr>
                     @endforeach

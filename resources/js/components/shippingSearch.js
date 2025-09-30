@@ -59,7 +59,7 @@ export default function searchDocumentComponent() {
               <p class="text-gray-500 text-theme-sm dark:text-gray-400">${formattedDate}</p>
             </td>
             <td class="px-5 py-4 sm:px-6">
-              <p class="text-gray-500 text-theme-sm dark:text-gray-400">${item.send_to}</p>
+             <p class="text-gray-500 text-theme-sm dark:text-gray-400">${item.company_name ?? '-'}</p>
             </td>
             <td class="px-5 py-4 sm:px-6">
               <p class="text-gray-500 text-theme-sm dark:text-gray-400">${item.project || ''}</p>

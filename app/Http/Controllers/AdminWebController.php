@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MasterItem;
+use App\Models\Partner;
+use App\Models\Preorder;
+use App\Models\Projects;
 use App\Models\TrackingSystem;
 use App\Models\TravelDocument;
 use App\Models\Unit;
@@ -14,41 +18,94 @@ class AdminWebController extends Controller
 {
     // Admin handling management SJN
     public function shippingsIndex() {
-        $listTravelDocument = TravelDocument::paginate(10);
+        $listTravelDocument = TravelDocument::with('sendTo')->paginate(10);
 
         return view('General.shippings', compact('listTravelDocument')); 
     }
 
 
-    public function searchDocument(Request $request){
-    $query = $request->query('search');
+    public function searchDocument(Request $request)
+    {
+        $query = $request->query('search');
 
-    $results = TravelDocument::where('no_travel_document', 'like', "%$query%")
-        ->orWhere('send_to', 'like', "%$query%")
-        ->orWhere('status', 'like', "%$query%")
-        ->orWhere('project', 'like', "%$query%")
-        ->orderBy('id', 'desc')
-        ->get(); 
+        $documents = TravelDocument::with('sendTo')
+            ->where('no_travel_document', 'like', "%$query%")
+            ->orWhereHas('sendTo', function ($q) use ($query) {
+                $q->where('company_name', 'like', "%$query%");
+            })
+            ->orWhere('status', 'like', "%$query%")
+            ->orWhere('project', 'like', "%$query%")
+            ->orderBy('id', 'desc')
+            ->get();
 
-        return response()->json(['results' => $results]);
+        $results = $documents->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'no_travel_document' => $item->no_travel_document,
+                'date_no_travel_document' => $item->date_no_travel_document,
+                'status' => $item->status,
+                'project' => $item->project,
+                'company_name' => optional($item->sendTo)->company_name ?? '-',
+            ];
+        });
+
+        return response()->json([
+            'results' => $results,
+        ]);
     }
 
-
     public function shippingsDetail($id) {
-        $travelDocument = TravelDocument::with(['items.unit'])->findOrFail($id);
+        $travelDocument = TravelDocument::with(['items.unit', 'items.masterItem'])->findOrFail($id);
         return view('General.shippings-detail', compact('travelDocument'));
     }
 
     public function shippingsAdd() {
         $units = Unit::all();
-        return view('General.shippings-add', compact('units'));
+        $masterItems = MasterItem::all();
+        $partners = Partner::all();
+        $projects = Projects::all();
+        $preorder = Preorder::with([
+            'items.masterItem',
+            'items.unit',
+            'partner',
+            'project',
+        ])->get();
+
+
+        return view('General.shippings-add', compact('units', 'masterItems', 'partners', 'projects', 'preorder'));
     }
 
-    public function shippingsEdit($id) {
-        $travelDocument = TravelDocument::with('items')->findOrFail($id);
-        $units = Unit::all();
+    public function shippingsEdit($id)
+    {
+        $travelDocument = TravelDocument::with(['items.masterItem', 'items.unit', 'preorder'])->findOrFail($id);
 
-        return view('General.shippings-edit', compact('travelDocument', 'units'));
+        $partners = Partner::all();
+        $units = Unit::all();
+        $masterItems = MasterItem::all();
+        $projects = Projects::all();
+
+        $itemsMapped = $travelDocument->items->map(function ($item) {
+            return [
+                'masterItemId' => $item->masterItem->id ?? '',
+                'itemCode' => $item->masterItem->item_code  ?? '',
+                'itemName' => $item->masterItem->item_name ?? '',
+                'description' => $item->masterItem->description ?? '',
+                'unitType' => $item->unit_id ?? '-',
+                'quantitySend' => $item->qty_send,
+                'totalSend' => $item->total_send,
+                'information' => $item->information,
+                'qtyPreOrder' => $item->qty_po,
+            ];
+        });
+
+        return view('General.shippings-edit', [
+            'travelDocument' => $travelDocument,
+            'partners' => $partners,
+            'units' => $units,
+            'masterItems' => $masterItems,
+            'itemsMapped' => $itemsMapped,
+            'projects' => $projects
+        ]);
     }
 
     public function shippingsUpdate(Request $request, $id){
@@ -58,12 +115,11 @@ class AdminWebController extends Controller
             'numberRef' => 'required',
             'projectName' => 'required',
             'poNumber' => 'required',
-            'itemCode.*' => 'required',
-            'itemName.*' => 'required',
-            'quantitySend.*' => 'required',
-            'totalSend.*' => 'required',
-            'qtyPreOrder.*' => 'required',
-            'unitType.*' => 'required',
+            'masterItemId.*' => 'required',
+            'quantitySend.*' => 'required|numeric',
+            'totalSend.*' => 'required|numeric',
+            'qtyPreOrder.*' => 'required|numeric',
+            'unitType.*' => 'required|exists:units,id',  
             'description.*' => 'required',
             'information.*' => 'nullable',
         ]);
@@ -72,27 +128,26 @@ class AdminWebController extends Controller
 
         $travelDocument->update([
             'no_travel_document' => $validated['numberSJN'],
-            'send_to' => $validated['sendTo'],
+            'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
             'po_number' => $validated['poNumber'],
-            'project' => $validated['projectName'],
+            'project_id' => $validated['projectName'],
             'status' => 'belum terkirim',
         ]);
 
         $travelDocument->items()->delete();
 
         $items = [];
-        foreach ($validated['itemCode'] as $key => $itemCode) {
+        foreach ($validated['masterItemId'] as $key => $masterItemId) {
             $items[] = [
                 'travel_document_id' => $travelDocument->id,
-                'item_code' => $itemCode,
-                'item_name' => $validated['itemName'][$key],
+                'master_item_id' => $masterItemId,
                 'qty_send' => $validated['quantitySend'][$key],
                 'total_send' => $validated['totalSend'][$key],
                 'qty_po' => $validated['qtyPreOrder'][$key],
                 'unit_id' => $validated['unitType'][$key],
                 'description' => $validated['description'][$key],
-                'information' => $validated['information'][$key],
+                'information' => $validated['information'][$key] ?? null,
             ];
         }
 
@@ -100,6 +155,7 @@ class AdminWebController extends Controller
 
         return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil diperbarui.');
     }
+
 
     public function shippingsDelete($id) {
         $travelDocument = TravelDocument::findOrFail($id);
@@ -122,29 +178,13 @@ class AdminWebController extends Controller
     public function shippingsAddTravelDocument(Request $request) {
         $attributes = [];
 
-        foreach ($request->input('itemCode', []) as $key => $value) {
-            $attributes["itemCode.$key"] = 'Kode barang baris ' . ($key + 1);
+        foreach ($request->input('masterItemId', []) as $key => $value) {
+        $attributes["masterItemId.$key"] = 'Kode Barang baris ' . ($key + 1);
         }
-        foreach ($request->input('itemName', []) as $key => $value) {
-            $attributes["itemName.$key"] = 'Nama barang baris ' . ($key + 1);
-        }
-        foreach ($request->input('quantitySend', []) as $key => $value) {
-            $attributes["quantitySend.$key"] = 'Jumlah kirim baris ' . ($key + 1);
-        }
-        foreach ($request->input('totalSend', []) as $key => $value) {
-            $attributes["totalSend.$key"] = 'Total kirim baris ' . ($key + 1);
-        }
-        foreach ($request->input('qtyPreOrder', []) as $key => $value) {
-            $attributes["qtyPreOrder.$key"] = 'Qty PO baris ' . ($key + 1);
-        }
-        foreach ($request->input('unitType', []) as $key => $value) {
-            $attributes["unitType.$key"] = 'Satuan baris ' . ($key + 1);
-        }
-        foreach ($request->input('description', []) as $key => $value) {
-            $attributes["description.$key"] = 'Deskripsi baris ' . ($key + 1);
-        }
-        foreach ($request->input('information', []) as $key => $value) {
-            $attributes["information.$key"] = 'Informasi baris ' . ($key + 1);
+        foreach (['quantitySend' => 'Jumlah Kirim', 'totalSend' => 'Total Kirim', 'qtyPreOrder' => 'Qty PO', 'unitType' => 'Satuan', 'description' => 'Deskripsi'] as $field => $label) {
+            foreach ($request->input($field, []) as $key => $value) {
+                $attributes["$field.$key"] = "$label baris " . ($key + 1);
+            }
         }
 
         $messages = [
@@ -154,14 +194,12 @@ class AdminWebController extends Controller
             'projectName.required' => 'Nama proyek harus diisi.',
             'poNumber.required' => 'Nomor PO harus diisi.',
 
-            'itemCode.*.required' => ':attribute harus diisi.',
-            'itemName.*.required' => ':attribute harus diisi.',
+            'masterItemId.*.required' => ':attribute harus diisi.',
             'quantitySend.*.required' => ':attribute harus diisi.',
             'totalSend.*.required' => ':attribute harus diisi.',
             'qtyPreOrder.*.required' => ':attribute harus diisi.',
             'unitType.*.required' => ':attribute harus diisi.',
             'description.*.required' => ':attribute harus diisi.',
-            // 'information.*.required' => ':attribute harus diisi.',
         ];
 
         $rules = [
@@ -171,12 +209,13 @@ class AdminWebController extends Controller
             'projectName' => 'required',
             'poNumber' => 'required',
 
-            'itemCode.*' => 'required',
-            'itemName.*' => 'required',
+            
+            'masterItemId.*' => 'required|exists:master_items,id',
+
             'quantitySend.*' => 'required',
             'totalSend.*' => 'required',
             'qtyPreOrder.*' => 'required',
-            'unitType.*' => 'required',
+            'unitType.*' => 'required|exists:units,id',
             'description.*' => 'required',
             'information.*' => 'nullable',
         ];
@@ -193,25 +232,25 @@ class AdminWebController extends Controller
         $travelDocument = TravelDocument::create([
             'no_travel_document' => $validated['numberSJN'],
             'date_no_travel_document' => now(),
-            'send_to' => $validated['sendTo'],
+            'send_to_id' => $validated['sendTo'],
             'reference_number' => $validated['numberRef'],
-            'po_number' => $validated['poNumber'],
-            'project' => $validated['projectName'],
+            'preorder_id' => $validated['poNumber'],
+            'project_id' => $validated['projectName'],
             'status' => 'belum terkirim',
         ]);
 
         $items = [];
-        foreach ($validated['itemCode'] as $key => $itemCode) {
+        foreach ($validated['masterItemId'] as $key => $masterItemId) {
             $items[] = [
                 'travel_document_id' => $travelDocument->id,
-                'item_code' => $itemCode,
-                'item_name' => $validated['itemName'][$key],
+                
+                'master_item_id' => $masterItemId,
                 'qty_send' => $validated['quantitySend'][$key],
                 'total_send' => $validated['totalSend'][$key],
                 'qty_po' => $validated['qtyPreOrder'][$key],
                 'unit_id' => $validated['unitType'][$key],
                 'description' => $validated['description'][$key],
-                'information' => $validated['information'][$key],
+                'information' => $validated['information'][$key] ?? null,
             ];
         }
 
@@ -219,8 +258,6 @@ class AdminWebController extends Controller
 
         return redirect()->route('shippings.index')->with('success', 'Data pengiriman berhasil ditambahkan.');
     }
-
-
 
     // Print SJN
     public function printShippings($id){

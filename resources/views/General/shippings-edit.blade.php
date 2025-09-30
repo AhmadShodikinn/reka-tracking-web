@@ -60,7 +60,7 @@
                     numberSJN: '{{ $travelDocument->no_travel_document }}',
                     numberRef: '{{ $travelDocument->reference_number }}',
                     projectName: '{{ $travelDocument->project }}',
-                    poNumber: '{{ $travelDocument->po_number }}'
+                    poNumber: '{{ $travelDocument->preorder->po_number ?? '' }}',
                 }" class="space-y-6">
 
                 <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -74,15 +74,22 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             <!-- Column 1 -->
                             <div class="flex items-center space-x-4">
-                                <label for="sendTo" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kepada <p class="text-red-500 inline">*</p></label>
-                                <input
-                                    type="text"
-                                    x-model="sendTo"
+                                <label for="sendTo" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">
+                                    Kepada <p class="text-red-500 inline">*</p>
+                                </label>
+                                <select
                                     id="sendTo"
                                     name="sendTo"
-                                    :value="sendTo"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                                />
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                                >
+                                    <option value="">-- Pilih Perusahaan --</option>
+                                    @foreach ($partners as $partner)
+                                        <option value="{{ $partner->id }}" 
+                                            {{ old('send_to_id', $travelDocument->send_to_id) == $partner->id ? 'selected' : '' }}>
+                                            {{ $partner->company_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <!-- Column 2 -->
@@ -111,15 +118,24 @@
 
                             <!-- Column 4 -->
                             <div class="flex items-center space-x-4">
-                                <label for="projectName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Proyek <p class="text-red-500 inline">*</p></label>
-                                <input
-                                    type="text"
-                                    x-model="projectName"
+                                <label for="projectName" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">
+                                    Proyek <p class="text-red-500 inline">*</p>
+                                </label>
+                                <select
                                     id="projectName"
                                     name="projectName"
+                                    x-model="projectName"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                                />
+                                >
+                                    <option value="" disabled>Pilih proyek</option>
+                                    @foreach($projects as $project)
+                                        <option value="{{ $project->id }}" {{ old('project_id', $travelDocument->project_id ?? '') == $project->id ? 'selected' : '' }}>
+                                            {{ $project->project_name }} ({{ $project->project_code }})
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
+
 
                             <!-- Column 5 -->
                             <div class="flex items-center space-x-4">
@@ -140,26 +156,31 @@
                 
                 <!-- BAGIAN ITEM BARANG -->
                 <div class="space-y-6 mt-4">
-                <div x-data="{
+                    <div x-data="{
                         totalBarang: {{ count($travelDocument->items) }},
-                        forms: {{ Js::from($travelDocument->items->map(function($item) {
-                        return [
-                            'itemName' => $item->item_name,
+                        forms: {{ Js::from($itemsMapped) }},
+                        unitOptions: {{ Js::from($units->map(fn($u) => ['id' => $u->id, 'name' => $u->name])) }},
+                        itemOptions: {{ Js::from($masterItems->map(fn($item) => [
+                            'id' => $item->id,
                             'itemCode' => $item->item_code,
-                            'quantitySend' => $item->qty_send,
-                            'unitType' => trim(optional($item->unit)->name ?? ''),
+                            'itemName' => $item->item_name,
                             'description' => $item->description,
-                            'totalSend' => $item->total_send,
-                            'information' => $item->information,
-                            'qtyPreOrder' => $item->qty_po
-                        ];
-                    })) }},
-                         unitOptions: {{ Js::from($units->map(fn($u) => ['id' => $u->id, 'name' => $u->name])) }},
-                }"
-                x-init="
-    console.log('unitOptions:', unitOptions);
-    console.log('forms:', forms);
-    ">
+                            'unitId' => $item->unit_id,
+                            'unitName' => $item->unit->name ?? '-'
+                        ])) }},
+
+                        updateItemDetails(index) {
+                            let selectedId = this.forms[index].masterItemId;
+                            let item = this.itemOptions.find(i => i.id == selectedId);
+                            if (item) {
+                                this.forms[index].itemName = item.itemName;
+                                this.forms[index].description = item.description;
+                            } else {
+                                this.forms[index].itemName = '';
+                                this.forms[index].description = '';
+                            }
+                        }
+                    }">
 
                     <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                         <div class="px-5 py-4 sm:px-6 sm:py-5 flex flex-inline justify-between">
@@ -183,42 +204,45 @@
                                     x-model="form.itemName"
                                     id="itemName"
                                     name="itemName[]"
+                                    readonly 
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                     />
                                 </div>
 
-                                <!-- Column 1 -->
+                                <!-- Column 1 --> 
                                 <div class="flex items-center space-x-4">
                                     <label for="itemCode" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Kode barang <p class="text-red-500 inline">*</p></label>
-                                    <input
-                                    type="text"
-                                    x-model="form.itemCode"
-                                    id="itemCode"
-                                    name="itemCode[]"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
-                                    />
+                                    <select
+                                        x-model="form.masterItemId"
+                                        
+                                    @change="updateItemDetails(index)" 
+                                        name="masterItemId[]"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                        >
+                                        <option value="">-- Pilih Kode Barang --</option>
+                                        <template x-for="item in itemOptions" :key="item.id">
+                                            <option 
+                                                :value="item.id" 
+                                                x-text="item.itemCode"
+                                                :selected="item.id == form.masterItemId"></option>
+                                        </template>
+                                    </select>
                                 </div>
 
                                 <!-- Column 3 -->
-                                <div class="flex items-center space-x-4"> 
-                                    <label for="unitType" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Satuan <p class="text-red-500 inline">*</p></label>
-                                    <select
-                                    x-model="forms[index].unitType"
-                                    name="unitType[]"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                <div class="flex items-center space-x-4">
+                                <label for="unitType" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400 w-1/3">Satuan <p class="text-red-500 inline">*</p></label>
+                                <select
+                                  x-model="form.unitType"
+                                  name="unitType[]"
+                                  class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
                                 >
-                                
-                                    <option value="">-- Pilih Satuan --</option>
-                                    <template x-for="unit in unitOptions" :key="unit.id">
-                                        <option 
-                                            :value="unit.id" 
-                                            x-text="unit.name" 
-                                            :selected="forms[index].unitType === unit.name"
-                                            >
-                                        </option>
-                                    </template>
+                                  <option value="">--pilih satuan--</option>
+                                  @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                  @endforeach
                                 </select>
-                            </div>
+                              </div>
 
                                 <!-- Column 2 -->
                                 <div class="flex items-center space-x-4">
@@ -264,6 +288,7 @@
                                     x-model="form.description"
                                     id="description"
                                     name="description[]"
+                                    readonly 
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-full w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                     />
                                 </div>
@@ -279,15 +304,6 @@
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-full w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                     />
                                 </div>
-                                
-                                <!-- <div class="flex justify-end space-x-4">
-                                    <button type="button" @click="forms.splice(index, 1); totalBarang--"
-                                    :class="forms.length <= 1 ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500 hover:bg-red-400'"
-                                    :disabled="forms.length <= 1"
-                                    class="rounded-md text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-                                    Hapus Item
-                                    </button>
-                                </div> -->
                                 
                                 </div>
                                 <hr class="border-t border-gray-300 dark:border-gray-800 mt-2" />

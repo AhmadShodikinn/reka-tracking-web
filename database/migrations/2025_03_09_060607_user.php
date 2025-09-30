@@ -23,7 +23,7 @@ return new class extends Migration
         });
     }
     
-    /**
+    /**php 
      * Reverse the migrations.
      */
     public function down(): void

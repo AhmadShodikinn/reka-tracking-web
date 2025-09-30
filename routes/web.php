@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\AdminWebController;
 use App\Http\Controllers\AuthWebController;
+use App\Http\Controllers\MasterItemsController;
+use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\PreorderController;
 use App\Http\Controllers\ProfileWebController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\SuperAdminWebController;
 use App\Http\Controllers\UnitWebController;
 use App\Http\Middleware\RoleMiddleware;
@@ -62,6 +66,35 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/units/{unit}/edit', [UnitWebController::class, 'edit'])->name('units.edit');
     Route::put('/units/{unit}', [UnitWebController::class, 'update'])->name('units.update');
     Route::delete('/units/{unit}', [UnitWebController::class, 'destroy'])->name('units.destroy');
+
+    Route::get('/items', [MasterItemsController::class, 'index'])->name('items.index');
+    Route::get('/items/create', [MasterItemsController::class, 'create'])->name('items.add');
+    Route::post('/items', [MasterItemsController::class, 'store'])->name('items.store');
+    Route::get('/items/{masterItem}/edit', [MasterItemsController::class, 'edit'])->name('items.edit');
+    Route::put('/items/{masterItem}', [MasterItemsController::class, 'update'])->name('items.update');
+    Route::delete('/items/{masterItem}', [MasterItemsController::class, 'destroy'])->name('items.destroy');
+
+    Route::get('/partners', [PartnerController::class, 'index'])->name('partners.index');
+    Route::get('/partners/create', [PartnerController::class, 'create'])->name('partners.create');
+    Route::post('/partners', [PartnerController::class, 'store'])->name('partners.store');
+    Route::get('/partners/{partner}/edit', [PartnerController::class, 'edit'])->name('partners.edit');
+    Route::put('/partners/{partner}', [PartnerController::class, 'update'])->name('partners.update');
+    Route::delete('/partners/{partner}', [PartnerController::class, 'destroy'])->name('partners.destroy');
+
+    Route::get('/projects', [ProjectsController::class, 'index'])->name('projects.index');
+    Route::get('/projects/create', [ProjectsController::class, 'create'])->name('projects.create');
+    Route::post('/projects', [ProjectsController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{project}/edit', [ProjectsController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}', [ProjectsController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+
+    Route::get('/preorders', [PreorderController::class, 'index'])->name('preorders.index');
+    Route::get('/preorders/create', [PreorderController::class, 'create'])->name('preorders.create');
+    Route::post('/preorders', [PreorderController::class, 'store'])->name('preorders.store');
+    Route::get('/preorders/{id}', [PreorderController::class, 'showDetailPreorder'])->name('preorders.detail');
+    Route::get('/preorders/{id}/edit', [PreorderController::class, 'edit'])->name('preorders.edit');
+    Route::put('/preorders/{id}', [PreorderController::class, 'update'])->name('preorders.update');
+    Route::delete('/preorders/{id}', [PreorderController::class, 'destroy'])->name('preorders.destroy');
 });
 
 Route::middleware(['auth', RoleMiddleware::class.':super admin'])->group(function () {

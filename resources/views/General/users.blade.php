@@ -150,12 +150,10 @@
                                       Edit
                                   </button>
                               </form>
-                              <form action="{{ route('users.destroy', ['id' => $user['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                              </form>
-
+                              @include('partials.modal.confirm-delete', [
+                                  'action' => route('users.destroy', $user['id']),
+                                  'title' => 'Hapus Data Ini?'
+                              ])
                           </div>
                       </td>
                   </tr>
