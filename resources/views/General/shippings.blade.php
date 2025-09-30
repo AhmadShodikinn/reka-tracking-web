@@ -155,19 +155,35 @@
                         <td class="px-5 py-4 sm:px-6">
                           <p class="text-gray-500 text-theme-sm dark:text-gray-400">{{ $data->project->project_name }}</p>
                         </td>
-                        <td class="px-5 py-4 sm:px-6 whitespace-nowrap">
-                          <p class="text-gray-500 inl text-theme-sm dark:text-gray-400">{{ $data->status }}</p>
+                                  <td class="px-5 py-4 sm:px-6 whitespace-nowrap">
+                            @if($data->status == 'Terkirim')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-black">
+                                    {{ $data->status }}
+                                </span>
+                            @elseif($data->status == 'Belum terkirim')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-black">
+                                    {{ $data->status }}
+                                </span>
+                            @elseif($data->status == 'Sedang dikirim')
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-black">
+                                    {{ $data->status }}
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-black">
+                                    {{ $data->status }}
+                                </span>
+                            @endif
                         </td>
+
                         <td class="px-5 py-4 sm:px-6">
                           <div class="flex space-x-2">
                             <form action="{{ route('shippings.detail', ['id' => $data['id']]) }}" method="GET">
                               <button type="submit" class="text-blue-600 dark:text-blue-400 hover:underline">detail</button>
                             </form>
-                            <form action="{{ route('shippings.destroy', ['id' => $data['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?');">
-                              @csrf
-                              @method('DELETE')
-                              <button type="submit" class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                            </form>
+                            @include('partials.modal.confirm-delete', [
+                                'action' => route('shippings.destroy', $data['id']),
+                                'title' => 'Hapus Data Ini?'
+                            ])
                           </div>
                         </td>
                       </tr>

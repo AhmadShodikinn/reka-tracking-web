@@ -73,11 +73,16 @@
                         <div class="flex space-x-2">
                           <a href="{{ route('items.edit', $item->id) }}"
                              class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a>
-                          <form action="{{ route('items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
+                          <!-- <form action="{{ route('items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
                             @csrf
                             @method('DELETE')
                             <button class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                          </form>
+                          </form> -->
+
+                          @include('partials.modal.confirm-delete', [
+                              'action' => route('items.destroy', $item['id']),
+                              'title' => 'Hapus Data Ini?'
+                          ])
                         </div>
                       </td>
                     </tr>

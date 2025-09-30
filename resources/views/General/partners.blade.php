@@ -77,11 +77,10 @@
                         <div class="flex space-x-2">
                           <a href="{{ route('partners.edit', $partner->id) }}"
                              class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a>
-                          <form action="{{ route('partners.destroy', $partner->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus partner ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                          </form>
+                          @include('partials.modal.confirm-delete', [
+                              'action' => route('partners.destroy', $partner['id']),
+                              'title' => 'Hapus Data Ini?'
+                          ])
                         </div>
                       </td>
                     </tr>

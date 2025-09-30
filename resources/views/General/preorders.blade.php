@@ -62,14 +62,10 @@
                                         <div class="flex space-x-2">
                                             <a href="{{ route('preorders.detail', $preorder->id) }}"
                                                class="text-blue-600 dark:text-blue-400 hover:underline">Detail</a>
-                                            <form action="{{ route('preorders.destroy', $preorder->id) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus preorder ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                        class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                                            </form>
+                                            @include('partials.modal.confirm-delete', [
+                                                'action' => route('preorders.destroy', $preorder['id']),
+                                                'title' => 'Hapus Data Ini?'
+                                            ])
                                         </div>
                                     </td>
                                 </tr>

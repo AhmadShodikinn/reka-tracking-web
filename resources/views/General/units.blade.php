@@ -73,11 +73,10 @@
                         <div class="flex space-x-2">
                           <a href="{{ route('units.edit', $unit->id) }}"
                              class="text-blue-600 dark:text-blue-400 hover:underline">Edit</a>
-                          <form action="{{ route('units.destroy', $unit->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus unit ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-red-600 dark:text-red-400 hover:underline">Hapus</button>
-                          </form>
+                            @include('partials.modal.confirm-delete', [  
+                                'action' => route('units.destroy', $unit['id']),
+                                'title' => 'Hapus Data Ini?'
+                            ])
                         </div>
                       </td>
                     </tr>
