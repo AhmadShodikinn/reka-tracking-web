@@ -170,7 +170,7 @@
                <ul
                   x-show="open"
                   x-collapse
-                  class="menu-dropdown mt-2 flex flex-col gap-1 pl-9"
+                  class="menu-dropdown mt-2 flex flex-col gap-1 pl-9 dark:text-white"
                 >
                   <li><a href="{{ route('units.index') }}" class="menu-dropdown-item {{ request()->is('units*') ? 'text-primary font-medium' : '' }}">Satuan Unit</a></li>
                   <li><a href="{{ route('items.index') }}" class="menu-dropdown-item {{ request()->is('items*') ? 'text-primary font-medium' : '' }}">Daftar Barang</a></li>
